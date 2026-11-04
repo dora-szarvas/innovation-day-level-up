@@ -71,7 +71,7 @@ The sequence (camera, cursor, lines, sounds) is set in `src/film/timeline.json`.
 | `src/assets/voice/`, `src/game/voice.js` | Placeholder voice lines (AAC). A step's `"vo"` in `story.json` names its file; lines play in order and stop when the player acts |
 | `src/game/characterType.js` | End-screen character type rules |
 | `src/screens/` | Library → Episodes → Game → End |
-| `src/components/McqCard.jsx` | Check card: every state, confidence, explanation, scripted tutor reply |
+| `src/components/McqCard.jsx` | Check card: every state, confidence and explanation |
 | `src/film/` | Film mode: shell, stage, timeline and sounds |
 | `handoff/` | The original brief, reference build, and illustration and voice prompts |
 

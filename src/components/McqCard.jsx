@@ -93,8 +93,7 @@ export function McqCard({ check, item, onSubmit, onDone, script }) {
   const [confState, setConf] = useState(null)
   const [resultState, setResult] = useState(null)
   const [explainState, setExplainOpen] = useState(false)
-  const [tutorState, setTutor] = useState(false)
-  // Film mode only (src/film): `script` = { sel, conf, submitted, explainOpen, tutor } drives the
+  // Film mode only (src/film): `script` = { sel, conf, submitted, explainOpen } drives the
   // card from a timeline instead of clicks. The demo never passes it, so nothing changes there.
   const sel = script ? (script.sel ?? null) : selState
   const conf = script ? (script.conf ?? null) : confState
@@ -104,7 +103,6 @@ export function McqCard({ check, item, onSubmit, onDone, script }) {
   )
   const result = script ? scriptedResult : resultState
   const explainOpen = script ? !!script.explainOpen : explainState
-  const tutor = script ? !!script.tutor : tutorState
   const firstAnswer = useRef(null)
   const submitRef = useRef(null)
   const continueRef = useRef(null)
@@ -285,19 +283,6 @@ export function McqCard({ check, item, onSubmit, onDone, script }) {
               <Text variant="label-small" className="text-right italic text-text-secondary">
                 Features in: {item.src}
               </Text>
-              {tutor ? (
-                <div className="border-t border-core-always-brand-3/30 pt-x3">
-                  <Text variant="body-regular" className="text-text-primary">
-                    <span className="font-bold text-core-always-brand-3">AI tutor (sample reply):</span> {item.tutor}
-                  </Text>
-                </div>
-              ) : (
-                <div>
-                  <Button type="tertiary" size="small" onClick={() => setTutor(true)}>
-                    Ask the tutor
-                  </Button>
-                </div>
-              )}
             </Card>
           )}
         </div>
