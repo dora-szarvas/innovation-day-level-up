@@ -1,0 +1,147 @@
+/*
+ * Game-only styles: the scene art, portraits, hotspots, blackout and the bottom-sheet
+ * reflow. Nebula has no components for a full-bleed game scene, so these are
+ * hand-written — but every colour reads a Nebula token, never a raw hex.
+ */
+
+/* Blurred scene behind the episode and end screens. */
+.scene-bg { position: absolute; inset: -8%; background: var(--scene-img) center / cover no-repeat; filter: blur(18px) brightness(0.7); }
+
+/* Gameplay scene: a stage with the art's aspect ratio that covers the screen. It slides so
+   the background's focus point (--fx, --fy) sits in the middle of the visible area (left of
+   the story panel), and zooms around that point. Hotspots are positioned on the stage. */
+.scene-stage {
+  --W: max(100vw, calc(100vh * var(--ar)));
+  --H: calc(var(--W) / var(--ar));
+  --cx: calc((100vw - var(--spacing-x50) * 2 - var(--spacing-x4) - var(--spacing-x12)) / 2);
+  --cy: 50vh;
+  position: absolute;
+  width: var(--W);
+  height: var(--H);
+  left: clamp(calc(100vw - var(--W)), calc(var(--cx) - var(--fx) * var(--W) / 100), 0px);
+  top: clamp(calc(100vh - var(--H)), calc(var(--cy) - var(--fy) * var(--H) / 100), 0px);
+  transform: scale(var(--zoom));
+  transform-origin: calc(var(--fx) * 1%) calc(var(--fy) * 1%);
+  transition: transform 1.6s ease, left 1.6s ease, top 1.6s ease;
+}
+.scene-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: scene-in 0.9s ease both; user-select: none; }
+
+/* Story panel: solid surface behind text (accessibility rule), docked right. */
+.story-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: max(var(--spacing-x12), env(safe-area-inset-right, 0px));
+  width: calc(var(--spacing-x50) * 2 + var(--spacing-x4)); /* 416px — Figma text panel 7:32157 */
+  z-index: 4;
+  transition: filter 0.3s, opacity 0.3s;
+}
+.story-panel.dim { filter: blur(6px); opacity: 0.55; pointer-events: none; }
+
+/* Room under the actions so they sit about a third of the way up the panel. */
+.story-foot { flex: 0 0 33%; }
+
+/* Scrollbars stay hidden at rest and show while the region scrolls (useScrollingClass). */
+.scroll-quiet { scrollbar-width: thin; scrollbar-color: transparent transparent; transition: scrollbar-color 0.3s; }
+.scroll-quiet.is-scrolling, .scroll-quiet:focus-visible { scrollbar-color: color-mix(in srgb, var(--color-core-always-brand-3) 40%, transparent) transparent; }
+
+.log-entry { animation: fade-up 0.35s ease both; }
+.log-entry.old { opacity: 0.6; }
+
+/* Portraits */
+.portraits {
+  position: absolute;
+  left: max(var(--portrait-x, 6%), env(safe-area-inset-left, 0px));
+  bottom: 0;
+  z-index: 3;
+  transition: left 0.6s ease;
+  display: flex;
+  gap: var(--spacing-x4);
+  pointer-events: none;
+}
+.portrait {
+  position: relative;
+  height: clamp(280px, 56vh, 560px);
+  aspect-ratio: 3 / 4;
+  animation: slide-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition: filter 0.3s, opacity 0.3s;
+}
+.portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: bottom center; user-select: none; }
+.portrait.placeholder { border-radius: 18px 18px 0 0; overflow: hidden; border: 1px solid color-mix(in srgb, var(--color-core-brand-3) 30%, transparent); border-bottom: 0; }
+.portrait.leaving { animation: slide-out 0.4s ease both; }
+.portrait.dimmed { filter: brightness(0.55) saturate(0.7); }
+.portrait svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* Hotspots on the scene art */
+.hotspot { position: absolute; z-index: 2; transform: translate(-50%, -50%); display: flex; align-items: center; gap: var(--spacing-x2); border-radius: var(--radius-circular, 999px); }
+.hotspot .dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-core-brand-3) 25%, transparent);
+  border: 2px solid var(--color-core-brand-3);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+.hotspot .hl { opacity: 0; transition: opacity 0.2s; }
+.hotspot:hover .hl, .hotspot:focus-visible .hl { opacity: 1; }
+.hotspot.used .dot { animation: none; opacity: 0.45; }
+.hotspot:focus-visible { outline: var(--outline-width, 2px) solid var(--color-interactive-border-inverse-focus); outline-offset: 3px; }
+
+/* Blackout and first-person blink */
+.blackout { position: absolute; inset: 0; background: #000; z-index: 8; opacity: 0; pointer-events: none; transition: opacity 0.9s ease; display: grid; place-items: center; }
+.blackout.on { opacity: 1; pointer-events: auto; }
+.blackout .caption { opacity: 0; transition: opacity 0.8s 0.4s; }
+.blackout.on .caption { opacity: 1; }
+.blink { position: absolute; inset: 0; background: #000; z-index: 9; pointer-events: none; opacity: 0; }
+.blink.run { animation: blink 2.6s ease forwards; }
+
+/* MCQ */
+.mcq-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--spacing-x6) max(var(--spacing-x6), env(safe-area-inset-right, 0px)) var(--spacing-x8) max(var(--spacing-x6), env(safe-area-inset-left, 0px));
+  pointer-events: none;
+}
+.mcq { pointer-events: auto; width: min(1000px, 100%); max-height: calc(100% - 80px); animation: fade-up 0.35s ease both; }
+.mcq-answers { display: grid; grid-template-columns: 1fr 1fr; }
+
+/* Episode / end glass card */
+.glass-card { width: min(1240px, 100%); max-height: 100%; }
+/* Shorter laptop screens (e.g. 1280×800): tighten the episode/end card so it fits without scrolling. */
+@media (max-height: 860px) {
+  .glass-area { padding-block: var(--spacing-x4); }
+  .glass-card { padding-block: var(--spacing-x8); row-gap: var(--spacing-x5); }
+}
+
+.fade-up { animation: fade-up 0.3s ease both; }
+
+@keyframes scene-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes slide-in { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+@keyframes slide-out { to { opacity: 0; transform: translateX(-60px); } }
+@keyframes pulse { 50% { transform: scale(1.25); opacity: 0.7; } }
+@keyframes blink { 0% { opacity: 1; } 22% { opacity: 0.15; } 30% { opacity: 1; } 48% { opacity: 0; } 56% { opacity: 0.8; } 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .game-root *, .game-root *::before, .game-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Under 960px: panel becomes a bottom sheet, answers go to one column (docs/ui-map.md). */
+@media (max-width: 960px) {
+  .story-panel { left: 0; right: 0; width: auto; top: auto; height: 52%; }
+  .story-foot { flex-basis: auto; }
+  .story-panel > * { border-radius: var(--radius-x4, 16px) var(--radius-x4, 16px) 0 0; }
+  .portraits { bottom: 52%; left: var(--spacing-x4); }
+  .scene-stage { --cx: 50vw; --cy: 24vh; }
+  .portrait { height: clamp(180px, 34vh, 300px); }
+  .mcq-answers { grid-template-columns: 1fr; }
+  .mcq-wrap { padding: var(--spacing-x3); }
+}

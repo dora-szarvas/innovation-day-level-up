@@ -1,0 +1,20 @@
+/* Fonts FIRST. This entry is a single remote `@import url(...)` to Google Fonts, and
+   CSS requires every @import to precede all other rules. Placed after styles-lean —
+   which inlines the theme and shell rules — it sits in an illegal position and the
+   bundler strips it: no error, no @font-face in the output, and the app silently
+   falls back to system fonts in both dev and the production build. The design
+   system's own all-inclusive entry (tailwind-theme.css) puts this same URL on
+   line 1, so fonts-first is the package's own order, not a workaround. */
+@import '@pearson-ux/nebula-design-system/fonts';
+
+/* Lean theme + shell (bundle-optimal entry, alpha.12). */
+@import '@pearson-ux/nebula-design-system/styles-lean';
+
+/* Nested dark-on-light surfaces — keep AFTER the theme, or it has nothing to override. */
+@import '@pearson-ux/nebula-design-system/surface-bridge';
+
+/* Scan your app, plus the whole Nebula package so components render as you add
+   them (no missing-style surprises). For a size-sensitive FINAL build, replace
+   the package glob with a scoped list:  npx nebula-source-closure <Components> */
+@source "./**/*.{js,ts,jsx,tsx}";
+@source "../node_modules/@pearson-ux/nebula-design-system/src/**/*.{js,jsx,ts,tsx}";

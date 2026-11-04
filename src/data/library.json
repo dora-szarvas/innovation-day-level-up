@@ -1,0 +1,83 @@
+{
+  "_note": "Game library copy. poster = file name in src/assets/posters/ (no extension). type must match a filter id. Only games with \"playable\": true open; the rest show as Coming soon.",
+  "course": "General Biology",
+  "title": "Game library",
+  "lede": "Learn by playing. Every game uses questions from your course, matched to your level, and every answer counts towards your progress.",
+  "filters": [
+    {
+      "id": "all",
+      "label": "All"
+    },
+    {
+      "id": "adventure",
+      "label": "Adventure"
+    },
+    {
+      "id": "arcade",
+      "label": "Arcade"
+    },
+    {
+      "id": "strategy",
+      "label": "Strategy"
+    }
+  ],
+  "games": [
+    {
+      "id": "train",
+      "name": "Midnight Train",
+      "desc": "A mystery on the night train",
+      "type": "adventure",
+      "poster": "poster-midnight-train",
+      "playable": true
+    },
+    {
+      "id": "snake",
+      "name": "Snake",
+      "desc": "Eat the right answers, grow longer",
+      "type": "arcade",
+      "poster": "poster-snake"
+    },
+    {
+      "id": "ships",
+      "name": "Battleships",
+      "desc": "Answer to fire. Sink the fleet",
+      "type": "strategy",
+      "poster": "poster-battleships"
+    },
+    {
+      "id": "orbit",
+      "name": "Orbit",
+      "desc": "Build a colony, one answer at a time",
+      "type": "strategy",
+      "poster": "poster-orbit"
+    },
+    {
+      "id": "lighthouse",
+      "name": "Lighthouse",
+      "desc": "Solve the keeper's riddles before the storm",
+      "type": "adventure",
+      "poster": "poster-lighthouse"
+    },
+    {
+      "id": "chess",
+      "name": "Chess",
+      "desc": "Every move starts with a question",
+      "type": "strategy",
+      "poster": "poster-chess"
+    },
+    {
+      "id": "bingo",
+      "name": "Bingo",
+      "desc": "Answer to mark your card. Five in a row wins",
+      "type": "arcade",
+      "poster": "poster-bingo"
+    },
+    {
+      "id": "golf",
+      "name": "Mini Golf",
+      "desc": "Right answers line up the perfect putt",
+      "type": "arcade",
+      "poster": "poster-mini-golf"
+    }
+  ]
+}

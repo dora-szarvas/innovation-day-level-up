@@ -1,0 +1,768 @@
+<title>Level Up Midnight Train</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@400&family=Noto+Sans:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@500&display=swap">
+<style>
+/* Layout: full-screen scene with the story log docked right (Nebula dark), checks as a card over the scene */
+:root{
+  --ink:#0d004d; --panel:#272247; --panel-2:#1e1a3d; --lav:#c1bfff; --lav-08:rgba(193,191,255,.08); --lav-20:rgba(193,191,255,.2); --lav-30:rgba(193,191,255,.3); --lav-50:rgba(193,191,255,.5);
+  --text:#ffffff; --muted:#e7e6ec; --muted-2:#b5b0c5; --soft:#edecf6;
+  --wrong-bg:#391619; --wrong:#ffa1a4; --wrong-text:#ffc0c1;
+  --right-bg:#173826; --right:#8fe3b4; --right-text:#b1f4ce;
+  --info-bg:#20334c; --info:#a8c2eb;
+  --warn-bg:#4a2a10; --warn:#ffb36b;
+  --display:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --body:"Noto Sans","Segoe UI",system-ui,sans-serif;
+  --num:"Noto Sans Display","Noto Sans",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--lav);outline-offset:3px}
+.screen{position:fixed;inset:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.screen[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- Library ---------- */
+#library{display:flex;background:radial-gradient(1200px 700px at 70% -10%,#3a2a78 0%,transparent 60%),linear-gradient(#1b1442,#120c33)}
+.rail{width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:22px;padding-block:18px;padding-left:env(safe-area-inset-left,0px)}
+.rail .logo{font-family:var(--display);font-size:22px;font-weight:500}
+.rail i{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;opacity:.8}
+.rail i.on{background:var(--lav-20);opacity:1}
+.rail svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.6}
+.rail.r{padding-left:0;padding-right:env(safe-area-inset-right,0px)}
+.rail .spacer{flex:1}
+.lib-main{flex:1;min-width:0;margin-block:12px;border-radius:20px;background:rgba(39,34,71,.65);border:1px solid var(--lav-20);overflow:auto;padding:32px 40px 40px}
+.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.02em}
+.lib-main h1{font-family:var(--display);font-weight:500;font-size:34px;margin:6px 0 8px}
+.lib-main .lede{color:var(--muted-2);max-width:56ch;margin:0 0 28px}
+.lib-tools{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:28px}
+.search{flex:1;max-width:520px;min-width:200px;display:flex;align-items:center;gap:8px;border:1px solid var(--lav-30);background:var(--lav-08);border-radius:6px;padding:10px 12px;color:var(--muted-2);font-size:14px}
+.search svg{margin-left:auto;width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.6}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{border:1px solid var(--lav-30);background:var(--lav-08);border-radius:4px;padding:9px 16px;font-size:14px}
+.filters button[aria-pressed="true"]{background:var(--lav-20);border-color:var(--lav);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+.card{position:relative;text-align:left;border:1px solid var(--lav-30);background:var(--lav-08);border-radius:16px;padding:12px 12px 16px;display:flex;flex-direction:column;gap:10px;transition:transform .2s,border-color .2s,background .2s}
+.card.playable:hover{transform:translateY(-4px);border-color:var(--lav);background:var(--lav-20)}
+.card.soon{cursor:default}
+.card .art{aspect-ratio:3/4;max-width:100%;border-radius:10px;overflow:hidden;position:relative;background:#2a2060}
+.card .art img{width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.badge{position:absolute;top:10px;left:10px;font-size:13px;padding:4px 8px;border-radius:4px}
+.badge.new{background:#4fe3d6;color:#0d004d}
+.badge.soon{background:rgba(20,18,30,.85);color:#fff}
+.tag{align-self:flex-start;font-size:11px;padding:2px 6px;border-radius:3px}
+.tag.adventure{background:#3a1d6e;color:#d7c4ff}.tag.arcade{background:#183a2a;color:#9ee6bf}.tag.strategy{background:#163646;color:#9ed8ec}
+.card h3{margin:0;font-size:14px;font-weight:700}
+.card p{margin:-6px 0 0;font-size:12px;color:var(--muted-2)}
+.art.ph svg{position:absolute;inset:0;width:100%;height:100%}
+
+/* ---------- Scene background ---------- */
+.bg{position:absolute;inset:-4%;background:url("train.jpg") center/cover no-repeat;transition:filter 1.2s ease,transform 1.6s ease,background-position 1.6s ease}
+.bg.blur{filter:blur(18px) brightness(.7);inset:-8%}
+.bg.v-compartment{filter:brightness(.85) saturate(1.05);background-position:40% 50%}
+.bg.v-zoom{filter:brightness(.85);transform:scale(1.18);background-position:30% 35%}
+.bg.v-corridor{filter:hue-rotate(-18deg) brightness(.78);background-position:70% 60%;transform:scale(1.1)}
+.bg.v-dining{filter:sepia(.35) hue-rotate(-25deg) saturate(1.3) brightness(.82);background-position:85% 55%;transform:scale(1.15)}
+.bg.v-dawn{filter:brightness(1.05) saturate(.9);background-position:40% 50%}
+.tint{position:absolute;inset:0;pointer-events:none;transition:background 1.6s ease}
+.tint.dawn{background:linear-gradient(180deg,rgba(255,170,120,.38),rgba(255,120,150,.12) 45%,rgba(13,0,77,.15))}
+.tint.dining{background:radial-gradient(70% 60% at 40% 40%,rgba(255,190,120,.18),transparent 70%)}
+.bgcap{position:absolute;left:24px;bottom:20px;font-size:12px;color:#fff;background:rgba(13,0,77,.6);border:1px solid var(--lav-30);padding:4px 8px;border-radius:4px}
+
+/* ---------- Episode + end screens ---------- */
+#episodes,#end{display:grid;place-items:center;overflow:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.glass{position:relative;width:min(1240px,100%);max-height:calc(100% - 64px);overflow:auto;border-radius:24px;background:rgba(13,0,77,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 32px 64px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);padding:56px 24px;display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center}
+.glass h1{font-family:var(--display);font-weight:500;font-size:clamp(34px,5vw,56px);line-height:1.1;margin:0;text-wrap:balance}
+.glass .desc{color:var(--muted-2);font-size:18px;margin:-20px 0 0;max-width:52ch}
+.back{position:absolute;top:20px;left:20px;font-size:14px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.eps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;text-align:left}
+.eps li{display:flex;align-items:center;gap:20px;color:var(--muted-2);font-size:18px}
+.eps li.cur{color:#fff;font-weight:700}
+.eps .ico{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);display:grid;place-items:center}
+.eps li.cur .ico{border-color:var(--lav-50)}
+.eps svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:1.6}
+.eps li:not(.cur) svg{opacity:.45}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--lav);color:var(--ink);border-radius:999px;padding:12px 20px;font-size:18px}
+.btn:hover{background:#d4d2ff}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:#fff;border:1px solid var(--lav-50)}
+.btn.ghost:hover{background:var(--lav-08)}
+.btn svg{width:20px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.learner{display:flex;flex-direction:column;gap:10px;align-items:center;border:1px dashed var(--lav-30);border-radius:12px;padding:14px 18px}
+.learner .lbl{font-size:13px;color:var(--muted-2)}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.seg button{border:1px solid var(--lav-30);background:var(--lav-08);border-radius:4px;padding:8px 14px;font-size:14px}
+.seg button[aria-pressed="true"]{border:2px solid var(--lav);background:var(--lav-20);font-weight:700;padding:7px 13px}
+.ctype{border:1px solid var(--lav-30);background:var(--lav-08);border-radius:16px;padding:24px 28px;max-width:560px}
+.ctype .k{font-size:13px;color:var(--muted-2);letter-spacing:.04em;text-transform:uppercase}
+.ctype h2{font-family:var(--display);font-weight:500;font-size:32px;margin:6px 0 4px}
+.ctype p{margin:0;color:var(--muted)}
+.stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.stat{border:1px solid var(--lav-30);border-radius:12px;padding:12px 18px;min-width:150px}
+.stat b{display:block;font-size:22px;font-family:var(--num);font-weight:400;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted-2)}
+.teaser{font-style:italic;color:var(--muted)}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+/* ---------- Gameplay ---------- */
+#game{overflow:hidden}
+.hud{position:absolute;top:calc(24px + env(safe-area-inset-top,0px));left:max(24px,env(safe-area-inset-left,0px));display:flex;gap:8px;z-index:6}
+.chip{display:flex;align-items:center;gap:10px;background:var(--panel);border-radius:4px;padding:12px;box-shadow:0 12px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08);font-size:16px;font-variant-numeric:tabular-nums}
+.chip svg{width:12px;height:12px;fill:#fff}
+.chip .ring{width:16px;height:16px}
+.chip .ring circle{fill:none;stroke-width:3}
+.panel{position:absolute;top:0;bottom:0;right:max(48px,env(safe-area-inset-right,0px));width:416px;background:var(--panel);box-shadow:0 32px 64px rgba(0,0,0,.35),inset 1px 0 0 rgba(255,255,255,.06);display:flex;flex-direction:column;z-index:4;transition:filter .3s,opacity .3s}
+.panel.dim{filter:blur(6px);opacity:.55;pointer-events:none}
+.log{flex:1;overflow-y:auto;padding:32px 24px 24px;display:flex;flex-direction:column;gap:20px;scroll-behavior:smooth}
+.entry{animation:fadeUp .35s ease both}
+.entry .who{font-weight:700;display:block;margin-bottom:6px}
+.entry .txt{padding-left:8px}
+.entry.narr .txt{padding-left:0;color:var(--soft)}
+.entry.you .who{color:var(--lav)}
+.entry.voice .who{color:#9ee6bf}
+.entry.chosen{color:var(--muted-2);font-size:14px}
+.entry.old{opacity:.6}
+.entry + .entry:not(.chosen):not(.cp)::before{content:"";display:block;height:1px;background:var(--lav-30);margin:0 0 20px 24px;width:calc(100% - 48px)}
+.cp{display:flex;align-items:center;gap:12px;font-size:14px}
+.cp::before,.cp::after{content:"";flex:1;height:1px;background:var(--lav-30)}
+.cp span{background:var(--lav-08);border-radius:4px;padding:6px 8px}
+.cp .ok{color:var(--right-text)}.cp .no{color:var(--wrong-text)}
+.actions{padding:0 24px 24px;display:flex;flex-direction:column;gap:8px}
+.actions .q{font-size:14px;color:var(--muted);margin-bottom:4px}
+.opt{display:flex;gap:12px;align-items:baseline;text-align:left;padding:6px 8px;border-radius:6px;color:var(--muted)}
+.opt b{color:var(--lav);font-size:18px}
+.opt:hover{background:var(--lav-08)}
+.opt.used b{color:var(--muted-2);font-weight:400}
+.cont{display:inline-flex;align-items:center;gap:10px;color:var(--lav);font-weight:700;font-size:18px;padding:6px 8px;border-radius:6px;align-self:flex-start}
+.cont:hover{background:var(--lav-08)}
+.cont svg{width:18px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.paused{margin:0 24px 24px;background:var(--warn-bg);color:#fff;border-radius:4px;padding:10px 12px;font-weight:700;font-size:14px;display:flex;gap:10px;align-items:center}
+.paused i{width:12px;height:12px;border-radius:2px;background:var(--warn)}
+
+.portraits{position:absolute;left:max(6%,env(safe-area-inset-left,0px));bottom:0;z-index:3;display:flex;gap:16px;pointer-events:none}
+.pt{width:250px;height:360px;border-radius:18px 18px 0 0;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(39,34,71,.15),rgba(39,34,71,.9));border:1px solid var(--lav-30);border-bottom:0;animation:slideIn .5s cubic-bezier(.2,.8,.2,1) both;transition:filter .3s,opacity .3s}
+.pt.leaving{animation:slideOut .4s ease both}
+.pt.dimmed{filter:brightness(.55) saturate(.7)}
+.pt svg{position:absolute;inset:0;width:100%;height:100%}
+.pt .nm{position:absolute;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:2px}
+.pt .nm b{font-size:16px}
+.pt .nm span{font-size:11px;color:var(--muted-2)}
+.pt .mood{position:absolute;top:10px;left:10px;font-size:11px;background:rgba(13,0,77,.7);padding:2px 6px;border-radius:3px}
+
+.hotspot{position:absolute;z-index:2;transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px}
+.hotspot .dot{width:22px;height:22px;border-radius:50%;background:rgba(193,191,255,.25);border:2px solid var(--lav);animation:pulse 1.8s ease-in-out infinite}
+.hotspot .hl{font-size:13px;background:rgba(13,0,77,.75);padding:3px 8px;border-radius:4px;opacity:0;transition:opacity .2s}
+.hotspot:hover .hl,.hotspot:focus-visible .hl{opacity:1}
+.hotspot.used .dot{animation:none;opacity:.45}
+
+.blackout{position:absolute;inset:0;background:#000;z-index:8;opacity:0;pointer-events:none;transition:opacity .9s ease;display:grid;place-items:center}
+.blackout.on{opacity:1;pointer-events:auto}
+.blackout p{max-width:40ch;text-align:center;font-size:20px;color:#ddd;opacity:0;transition:opacity .8s .4s;padding:0 24px}
+.blackout.on p{opacity:1}
+.blink{position:absolute;inset:0;background:#000;z-index:9;pointer-events:none;opacity:0}
+.blink.run{animation:blink 2.6s ease forwards}
+
+/* MCQ */
+.mcq-wrap{position:absolute;inset:0;z-index:7;display:flex;align-items:flex-end;justify-content:center;padding:24px max(24px,env(safe-area-inset-right,0px)) 32px max(24px,env(safe-area-inset-left,0px));pointer-events:none}
+.mcq{pointer-events:auto;width:min(1000px,100%);max-height:calc(100% - 80px);overflow:auto;background:var(--panel);border:1px solid var(--lav-30);border-radius:16px;box-shadow:0 32px 64px rgba(0,0,0,.4);animation:fadeUp .35s ease both}
+.mcq-head{padding:24px 32px 0;display:flex;flex-direction:column;gap:8px}
+.ck{display:flex;gap:8px;align-items:center;font-size:13px;letter-spacing:.06em}
+.ck b{font-weight:700}
+.ck .d{padding:2px 8px;border-radius:3px;background:var(--lav-20);letter-spacing:0}
+.ck .d.adapt{background:var(--info-bg);color:var(--info)}
+.framing{font-style:italic;color:var(--muted-2);margin:0}
+.qtext{font-family:var(--display);font-weight:500;font-size:18px;margin:4px 0 0}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;padding:20px 32px}
+.ans{display:flex;align-items:center;gap:16px;min-height:68px;padding:12px 16px;border-radius:12px;background:var(--lav-08);border:1px solid var(--lav-30);text-align:left;font-size:16px}
+.ans:hover:not([disabled]){background:var(--lav-20)}
+.ans .id{flex:none;width:32px;height:36px;border-radius:8px;background:var(--lav);color:var(--ink);display:grid;place-items:center;font-family:var(--num)}
+.ans .at{flex:1}
+.ans .mk{flex:none;width:24px;height:24px;border-radius:50%;display:none;place-items:center;color:#1f1f1f;font-size:14px;font-weight:700}
+.ans.sel{background:var(--lav-20);border:2px solid var(--lav);padding:11px 15px;font-weight:700}
+.ans.ok{background:var(--right-bg);border:2px solid var(--right);padding:11px 15px}
+.ans.ok .id{background:var(--right-text)}
+.ans.ok .mk{display:grid;background:var(--right)}
+.ans.no{background:var(--wrong-bg);border:2px solid var(--wrong);padding:11px 15px}
+.ans.no .id{background:var(--wrong-text)}
+.ans.no .mk{display:grid;background:var(--wrong)}
+.ans.show{background:var(--info-bg);border:2px solid var(--info);padding:11px 15px}
+.ans.show .mk{display:grid;background:var(--info)}
+.ans[disabled]{cursor:default}
+.fb{text-align:center;margin:0 32px 20px;font-size:18px}
+.fb.ok{color:var(--right-text)}.fb.no{color:var(--wrong-text)}
+.mcq-foot{border-top:1px solid var(--lav-30);padding:20px 32px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mcq-foot .q{color:var(--soft)}
+.conf{display:flex;gap:8px;flex-wrap:wrap}
+.conf button{border:1px solid var(--lav-30);background:var(--lav-08);border-radius:4px;padding:11px 14px;font-size:16px}
+.conf button[aria-pressed="true"]{border:2px solid var(--lav);background:var(--lav-20);font-weight:700;padding:10px 13px}
+.conf button[disabled]{opacity:.4;cursor:not-allowed}
+.grow{flex:1}
+.btn.sm{font-size:16px;padding:12px 16px}
+.pill{border:1px solid var(--lav-50);border-radius:999px;padding:10px 14px;font-size:15px;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(90deg,#7aa7ff,#c38bff,#ff9fd2) border-box;border-color:transparent}
+.explain{margin:0 32px 24px;background:var(--panel-2);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;animation:fadeUp .3s ease both}
+.explain .v{font-weight:700;color:#9ee6bf}
+.explain .src{font-size:13px;font-style:italic;color:var(--muted-2);text-align:right}
+.explain .tutor{border-top:1px solid var(--lav-30);padding-top:10px}
+.explain .tutor b{color:var(--lav)}
+.linkbtn{align-self:flex-start;color:var(--lav);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+@keyframes slideOut{to{opacity:0;transform:translateX(-60px)}}
+@keyframes pulse{50%{transform:scale(1.25);opacity:.7}}
+@keyframes blink{0%{opacity:1}22%{opacity:.15}30%{opacity:1}48%{opacity:0}56%{opacity:.8}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+@media (max-width:960px){
+  .panel{left:0;right:0;width:auto;top:auto;height:52%;border-radius:16px 16px 0 0;padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .portraits{bottom:52%;left:16px}
+  .pt{width:150px;height:200px}
+  .bgcap{display:none}
+  .answers{grid-template-columns:1fr;padding:16px}
+  .mcq-head{padding:20px 16px 0}.mcq-foot{padding:16px}.fb,.explain{margin-left:16px;margin-right:16px}
+  .mcq-wrap{padding:12px max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
+  .rail:not(.r){width:52px}.rail.r{display:none}
+  .lib-main{padding:24px 16px;margin-right:max(12px,env(safe-area-inset-right,0px))}
+}
+</style>
+
+<!-- ============ LIBRARY ============ -->
+<section id="library" class="screen" aria-label="Game library">
+  <nav class="rail" aria-label="Main">
+    <span class="logo">P</span>
+    <i><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg></i>
+    <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M10 9l5 2-5 2z"/></svg></i>
+    <i><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></i>
+    <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 5-4 1 2-5z"/></svg></i>
+    <i class="on" title="Level Up"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="5"/><path d="M8 11v3M6.5 12.5h3"/><circle cx="16" cy="11.5" r=".8"/><circle cx="17.5" cy="13.5" r=".8"/></svg></i>
+  </nav>
+  <main class="lib-main">
+    <div class="eyebrow">General Biology</div>
+    <h1>Level Up</h1>
+    <p class="lede">Learn by playing. Every game uses questions from your course, matched to your level, and every answer counts towards your progress.</p>
+    <div class="lib-tools">
+      <div class="search" role="search">Search games…<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></div>
+      <div class="filters" id="filters">
+        <button aria-pressed="true" data-f="all">All</button>
+        <button aria-pressed="false" data-f="adventure">Adventure</button>
+        <button aria-pressed="false" data-f="arcade">Arcade</button>
+        <button aria-pressed="false" data-f="strategy">Strategy</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+  <nav class="rail r" aria-hidden="true">
+    <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7l2 5-2 5-2-5z"/></svg></i>
+    <i><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></i>
+    <span class="spacer"></span>
+    <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></i>
+    <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></i>
+  </nav>
+</section>
+
+<!-- ============ EPISODES ============ -->
+<section id="episodes" class="screen" hidden aria-label="Midnight Train episodes">
+  <div class="bg blur"></div>
+  <div class="glass">
+    <button class="back" data-go="library"><svg width="16" height="12" viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 8H2M8 2L2 8l6 6"/></svg>Game library</button>
+    <h1>Midnight Train</h1>
+    <p class="desc">You wake on the night train with no ticket. Find out who has the other half before the next stop.</p>
+    <ul class="eps">
+      <li class="cur"><span class="ico"><svg viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z"/></svg></span>Episode 1: The Missing Ticket</li>
+      <li><span class="ico"><svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg></span>Episode 2: Ashford Halt</li>
+      <li><span class="ico"><svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg></span>Episode 3: The Signal Box</li>
+      <li><span class="ico"><svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg></span>Episode 4: Compartment 7</li>
+      <li><span class="ico"><svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="6.5" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2"/></svg></span>Episode 5: The Last Stop</li>
+    </ul>
+    <div class="learner">
+      <span class="lbl">Demo setting: starting learner (normally read from course proficiency)</span>
+      <div class="seg" id="learnerSeg">
+        <button aria-pressed="true" data-l="0">New to the topic</button>
+        <button aria-pressed="false" data-l="1">Confident in the topic</button>
+      </div>
+    </div>
+    <button class="btn" id="startBtn">Start episode 1 <svg viewBox="0 0 20 16"><path d="M1 8h17M12 2l6 6-6 6"/></svg></button>
+  </div>
+</section>
+
+<!-- ============ GAME ============ -->
+<section id="game" class="screen" hidden aria-label="Midnight Train, episode 1">
+  <div class="bg v-compartment" id="bg"></div>
+  <div class="tint" id="tint"></div>
+  <div class="bgcap" id="bgcap">Placeholder background</div>
+  <div id="hotspots"></div>
+  <div class="portraits" id="portraits" aria-hidden="true"></div>
+  <div class="hud">
+    <button class="chip" id="timerBtn" aria-label="Pause focus timer">
+      <svg id="tIcon" viewBox="0 0 12 12"><rect x="2" y="1.5" width="2.6" height="9" rx=".6"/><rect x="7.4" y="1.5" width="2.6" height="9" rx=".6"/></svg>
+      <span id="tTime">15:00</span>
+      <svg class="ring" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" stroke="rgba(193,191,255,.3)"/><circle id="tArc" cx="8" cy="8" r="6.5" stroke="#c1bfff" stroke-dasharray="40.84" stroke-dashoffset="0" transform="rotate(-90 8 8)"/></svg>
+    </button>
+    <button class="chip" id="soundBtn" aria-label="Turn sound off" aria-pressed="true">
+      <svg viewBox="0 0 12 12"><path d="M1 4.5h2.2L6.5 2v8L3.2 7.5H1z"/><path d="M8 4c.8.9.8 3.1 0 4M9.5 2.8c1.6 1.7 1.6 4.7 0 6.4" fill="none" stroke="#fff" stroke-width="1"/></svg>
+      <span id="soundLbl">Sound on</span>
+    </button>
+  </div>
+  <aside class="panel" id="panel" aria-label="Story">
+    <div class="log" id="log" aria-live="polite"></div>
+    <div class="actions" id="actions"></div>
+    <div class="paused" id="pausedBar" hidden><i></i>Timer paused</div>
+  </aside>
+  <div class="mcq-wrap" id="mcqWrap" hidden></div>
+  <div class="blackout" id="blackout"><p id="blackText"></p></div>
+  <div class="blink" id="blink"></div>
+</section>
+
+<!-- ============ END ============ -->
+<section id="end" class="screen" hidden aria-label="Episode complete">
+  <div class="bg blur"></div>
+  <div class="glass" id="endCard"></div>
+</section>
+
+<script>
+/* =========================================================
+   QUESTION BANK (sample General Biology items, two levels per check)
+   In the product these come from the course question bank.
+   ========================================================= */
+const BANK = {
+  remember: [
+    {q:"Which organelle is the main site of aerobic respiration in a cell?", a:["Nucleus","Mitochondrion","Ribosome","Golgi apparatus"], c:1,
+     ex:"Mitochondria carry out aerobic respiration and release most of the cell's ATP. The nucleus stores DNA, ribosomes build proteins, and the Golgi apparatus modifies and packages proteins.",
+     tutor:"Think of mitochondria as the cell's power station: fuel (glucose) and oxygen go in, usable energy (ATP) comes out.", src:"Lesson 1.2 Cell structure"},
+    {q:"Which structure is found in plant cells but not in animal cells?", a:["Cell membrane","Ribosome","Mitochondrion","Cell wall"], c:3,
+     ex:"Plant cells have a cellulose cell wall outside the cell membrane, which keeps the cell rigid. Animal cells have a membrane, ribosomes and mitochondria, but no cell wall.",
+     tutor:"Picture a balloon (the membrane) inside a cardboard box (the wall). Animal cells are just the balloon.", src:"Lesson 1.2 Cell structure"}],
+  lock: [
+    {q:"What is osmosis?", a:["Movement of water across a partially permeable membrane, from a dilute to a more concentrated solution","Movement of solutes against a concentration gradient using energy","The cell membrane engulfing large particles","Movement of ions through protein pumps"], c:0,
+     ex:"Osmosis is the passive movement of water across a partially permeable membrane, from where there's more free water (dilute solution) to where there's less (concentrated solution). Using energy to move solutes is active transport.",
+     tutor:"Water moves to dilute the side with more 'stuff' dissolved in it, a bit like evening out a crowd.", src:"Lesson 2.3 Membrane transport"},
+    {q:"A red blood cell is placed in a hypotonic solution. What is most likely to happen?", a:["It shrinks","Nothing changes","It swells and may burst","It divides"], c:2,
+     ex:"A hypotonic solution has a lower solute concentration than the cell, so water enters the cell by osmosis. Animal cells have no cell wall to resist the pressure, so the cell swells and can burst (lysis).",
+     tutor:"Hypo means 'less' solute outside, so water rushes in. Without a wall, there's nothing to stop the cell over-filling.", src:"Lesson 2.3 Membrane transport"}],
+  convince: [
+    {q:"Two pea plants with genotype Tt are crossed. T (tall) is dominant. What proportion of offspring are expected to be tall?", a:["25%","50%","75%","100%"], c:2,
+     ex:"A Tt × Tt cross gives TT, Tt, Tt and tt. Three of the four combinations contain at least one dominant T allele, so 75% are expected to be tall.",
+     tutor:"Draw a 2 × 2 Punnett square: only the tt box is short, so 3 out of 4 are tall.", src:"Lesson 4.1 Mendelian genetics"},
+    {q:"Two AaBb individuals are crossed and the genes assort independently. What fraction of offspring show both recessive traits (aabb)?", a:["1/16","3/16","9/16","1/4"], c:0,
+     ex:"Each gene gives a 1/4 chance of the recessive genotype (aa or bb). Because they assort independently, multiply: 1/4 × 1/4 = 1/16.",
+     tutor:"Solve one gene at a time, then multiply the chances. That's quicker than drawing a 16-box square.", src:"Lesson 4.2 Dihybrid crosses"}],
+  again: [
+    {q:"In DNA, which base pairs with adenine?", a:["Cytosine","Guanine","Thymine","Uracil"], c:2,
+     ex:"In DNA, adenine pairs with thymine and guanine pairs with cytosine. Uracil replaces thymine in RNA.",
+     tutor:"A handy rhyme: 'Apples in the Tree, Car in the Garage'.", src:"Lesson 3.1 DNA structure"},
+    {q:"What is the role of mRNA in protein synthesis?", a:["It carries amino acids to the ribosome","It carries a copy of a gene's code from the DNA to the ribosome","It forms the structure of the ribosome","It joins DNA fragments together"], c:1,
+     ex:"Messenger RNA (mRNA) is a copy of a gene's code, made during transcription. It carries the code to the ribosome for translation. tRNA brings amino acids, rRNA forms ribosomes and DNA ligase joins DNA fragments.",
+     tutor:"mRNA is the photocopy of the recipe: the original (DNA) stays safely in the nucleus.", src:"Lesson 3.3 Protein synthesis"}],
+  duck: [
+    {q:"What happens to most human enzymes at very high temperatures?", a:["They keep working faster","They denature and stop working","They turn into substrates","They make more copies of themselves"], c:1,
+     ex:"High temperatures break the bonds that hold an enzyme's shape. The active site changes shape (the enzyme denatures), so the substrate no longer fits and the reaction stops.",
+     tutor:"An enzyme's active site is like a lock. Heat warps the lock, so the key no longer fits.", src:"Lesson 2.5 Enzymes"},
+    {q:"How does a competitive inhibitor slow down an enzyme-controlled reaction?", a:["It binds to the active site and blocks the substrate","It permanently destroys the enzyme","It binds to the substrate instead of the enzyme","It raises the temperature of the reaction"], c:0,
+     ex:"A competitive inhibitor has a similar shape to the substrate, so it binds to the active site and competes with the substrate. Adding more substrate can outcompete it.",
+     tutor:"Imagine someone sitting in your seat on the train. You can't sit there until they get up.", src:"Lesson 2.5 Enzymes"}],
+  claim: [
+    {q:"Which gas do plants take in for photosynthesis?", a:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"], c:2,
+     ex:"Plants take in carbon dioxide and water and use light energy to make glucose, releasing oxygen as a by-product.",
+     tutor:"Plants breathe in what we breathe out: CO₂ in, O₂ out during photosynthesis.", src:"Lesson 5.1 Photosynthesis"},
+    {q:"Where in the chloroplast do the light-independent reactions (Calvin cycle) take place?", a:["Thylakoid membrane","Stroma","Outer membrane","Inside the thylakoid space"], c:1,
+     ex:"The light-dependent reactions happen on the thylakoid membranes. The light-independent reactions (Calvin cycle) take place in the stroma, the fluid around the thylakoids.",
+     tutor:"Light reactions happen on the stacks (thylakoids). The Calvin cycle happens in the 'soup' around them, the stroma.", src:"Lesson 5.2 Chloroplasts"}]
+};
+const LEVELS = ["Easy","Medium","Challenging","Expert"];
+
+/* =========================================================
+   STORY (scenes as data — a new story or course needs no code changes)
+   ========================================================= */
+const BGS = {
+  compartment:{cls:"v-compartment",tint:"",cap:"BG1 · Your compartment (placeholder)"},
+  suitcase:{cls:"v-zoom",tint:"",cap:"BG1 · Your compartment, luggage rack (placeholder)"},
+  corridor:{cls:"v-corridor",tint:"",cap:"BG2 · Corridor (placeholder)"},
+  dining:{cls:"v-dining",tint:"dining",cap:"BG3 · Dining car (placeholder)"},
+  dawn:{cls:"v-dawn",tint:"dawn",cap:"BG1 · Your compartment, dawn (placeholder)"}
+};
+const CAST = {
+  passenger:{name:"Passenger",hue:"#7a5cc7"},
+  conductor:{name:"Conductor",hue:"#3f6fb8"},
+  stranger:{name:"Stranger",hue:"#b0507d"}
+};
+const S = {
+ s1:[ {bg:"compartment"},{blink:1},{sfx:"wheels"},{wait:1300},{sfx:"hornFar"},
+      {n:"You wake to the rattle of wheels. Night presses against the window."},{cont:1},
+      {show:"passenger",mood:"Asleep"},{n:"Across from you, an older woman sleeps, her hat tipped over her eyes."},{cont:1},
+      {n:"Where did you get on? Your head is full of fog."},
+      {choice:"What would you like to do?",opts:[
+        {label:"Check your coat pocket",look:"Empty. Your ticket was here. You're sure of it.",spot:[22,72]},
+        {label:"Look out of the window",look:"Fog, and the long horn again. A tunnel, somewhere ahead.",sfx:"hornFar",spot:[26,24]},
+        {label:"Try to remember where you boarded",check:"remember"}]}],
+ remember_r:[{flag:"boarded_known"},{n:"Kingsmoor. Platform two, the clock stuck at ten past. It comes back clearly."},{cont:1},{go:"s2"}],
+ remember_w:[{flag:"boarded_guessed"},{n:"Kingsmoor? Kingsford? You wouldn't bet on either."},{cont:1},{go:"s2"}],
+ s2:[ {bg:"suitcase"},{n:"Your suitcase sits on the rack, right above the sleeping woman."},
+      {choice:"What would you like to do?",opts:[{label:"Open the suitcase",check:"lock"}]}],
+ lock_r:[{sfx:"click"},{n:"The lock gives with the softest click. She doesn't stir. Impressive."},{cont:1},{go:"s2b"}],
+ lock_w:[{flag:"passenger_annoyed"},{sfx:"clack"},{mood:"passenger",v:"Annoyed"},
+      {who:"passenger",t:"She lifts her hat and glares. “Some of us were sleeping.”"},{cont:1},
+      {n:"She tips the hat back down. Pointedly."},{mood:"passenger",v:"Asleep"},{cont:1},{go:"s2b"}],
+ s2b:[{choice:"What would you like to do?",opts:[{label:"Look inside",next:"s2c"}]}],
+ s2c:[{n:"Half a ticket, torn clean down the middle. You can make out “Kingsmoor” and a seat number. The rest is gone."},
+      {choice:"What would you like to do?",opts:[{label:"Step into the corridor",next:"s3"}]}],
+ s3:[ {hide:"passenger"},{bg:"corridor"},{sfx:"door"},{wait:500},{sfx:"steps"},{wait:900},
+      {show:"conductor",mood:"Friendly"},{who:"conductor",t:"He touches his cap. “Evening. Ticket, please.”"},
+      {choice:"What would you like to do?",opts:[{label:"Show him the half ticket",check:"convince"}]}],
+ convince_r:[{you:"“It tore when I boarded. The other half is on this train somewhere.”"},{cont:1},{go:"hint"}],
+ convince_w:[{you:"“I had it, I really did. It was right here, and then I fell asleep, and…”"},{mood:"conductor",v:"Displeased"},
+      {who:"conductor",t:"His pen stops. “Half a ticket is half a passenger. I need a valid ticket.”"},{cont:1},{go:"s4"}],
+ hint:[{mood:"conductor",v:"Friendly"},
+      {who:"conductor",t:"He studies the half, then you. “Kingsmoor. Makes sense.”",if:"boarded_known"},
+      {who:"conductor",t:"He studies the half, then you. “Kingsmoor, you said? Hm. Fine.”",if:"boarded_guessed"},{cont:1},
+      {who:"conductor",t:"He lowers his voice. “Funny thing. A woman in the dining car showed me half a ticket earlier.”"},{cont:1},
+      {who:"conductor",t:"Already moving on. “Hold on to your things. The lights go out in the Hollow Tunnel.”"},{hide:"conductor"},
+      {choice:"What would you like to do?",opts:[{label:"Find the woman in the dining car",next:"s5"}]}],
+ s4:[ {who:"conductor",t:"He flips open his notebook and starts writing."},
+      {choice:"What would you like to do?",opts:[{label:"Try to convince him again",check:"again"},{label:"Duck past him while he writes",check:"duck"}]}],
+ again_r:[{you:"“Please. Kingsmoor, seat 14. The rest of it is on this train, I promise.”"},{cont:1},{go:"hint"}],
+ again_w:[{flag:"on_shift"},{who:"conductor",t:"He tears off a slip. “No ticket, no ride. You can work it off. The bar's short-handed tonight.”"},{cont:1},
+      {who:"conductor",t:"Already moving on. “And hold on to your things. The lights go out in the Hollow Tunnel.”"},{hide:"conductor"},
+      {choice:"What would you like to do?",opts:[{label:"Head to your shift in the dining car",next:"s5"}]}],
+ duck_r:[{hide:"conductor"},{n:"You slip past mid-sentence. He doesn't look up."},{cont:1},
+      {who:"conductor",t:"Behind you, to no one in particular. “Second half-ticket tonight. That woman in the dining car had one too.”"},
+      {choice:"What would you like to do?",opts:[{label:"Head for the dining car",next:"s5"}]}],
+ duck_w:[{flag:"on_shift"},{mood:"conductor",v:"Displeased"},{who:"conductor",t:"He catches your sleeve. “Where do you think you're going?”"},{cont:1},
+      {who:"conductor",t:"“No ticket, no ride. You can work it off. The bar's short-handed tonight.”"},{cont:1},
+      {who:"conductor",t:"Already moving on. “And hold on to your things. The lights go out in the Hollow Tunnel.”"},{hide:"conductor"},
+      {choice:"What would you like to do?",opts:[{label:"Head to your shift in the dining car",next:"s5"}]}],
+ s5:[ {bg:"dining"},{sfx:"cups"},
+      {n:"The dining car is nearly empty. A woman sits alone by the window, a map spread across her table. Half a ticket pins down one corner.",if:"!on_shift"},
+      {n:"You tie on an apron that isn't yours. A woman sits alone by the window, a map spread across her table. Half a ticket pins down one corner.",if:"on_shift"},{cont:1},
+      {show:"stranger",mood:"Amused"},
+      {who:"stranger",t:"She doesn't look up. “There you are. I was beginning to think you'd miss the train entirely.”",if:"!on_shift"},
+      {who:"stranger",t:"She doesn't look up. “A new face behind the bar. Tea, no sugar. And mind the map.”",if:"on_shift"},{cont:1},
+      {who:"stranger",t:"She taps the torn ticket. “Funny things, tickets. Half of one gets you nowhere.”"},
+      {choice:"What would you like to do?",opts:[
+        {label:"Look at the map",look:"Stations circled in red ink. Ashford Halt, circled twice.",spot:[58,62]},
+        {label:"Claim the ticket half",check:"claim",sfx:"hornNear"}]}],
+ claim_r:[{flag:"ticket_found"},{who:"stranger",t:"A slow smile. “Hm. You'll do.” She slides the half across the table."},{cont:1},
+      {dark:1},{sfx:"tunnel"},{wait:1400},{dark:"text",t:"Stranger: A whisper, close by. “Next stop. Don't be late.”"},
+      {who:"stranger",t:"A whisper, close by. “Next stop. Don't be late.”"},{wait:2600},{hide:"stranger",instant:1},{dark:0},{wait:900},
+      {n:"Her seat is empty. The map is gone. In your hand: both halves of your ticket."},
+      {choice:"What would you like to do?",opts:[{label:"Return to your compartment",next:"s6"}]}],
+ claim_w:[{who:"stranger",t:"“Not quite what I hoped.” She begins folding the map."},{cont:1},
+      {dark:1},{sfx:"tunnel"},{wait:900},{sfx:"scrape"},{wait:700},{sfx:"steps"},{wait:1600},{hide:"stranger",instant:1},{dark:0},{wait:900},
+      {n:"Her seat is empty. The ticket is gone. On the table, a napkin: “Next stop.”"},
+      {choice:"What would you like to do?",opts:[{label:"Return to your compartment",next:"s6"}]}],
+ s6:[ {bg:"dawn"},{sfx:"brakes"},{n:"Grey light creeps over the hills. The train is slowing."},{cont:1},
+      {show:"passenger",mood:"Kind",if:"ticket_found"},
+      {who:"passenger",t:"She opens one eye. “Found what you were looking for?”",if:"ticket_found"},
+      {n:"The Conductor passes your door and gives you a nod.",if:"ticket_found"},
+      {show:"passenger",mood:"Kind",if:["!ticket_found","!passenger_annoyed"]},
+      {who:"passenger",t:"She holds out a torn scrap. “A woman dropped this outside your door. In a hurry.”",if:["!ticket_found","!passenger_annoyed"]},
+      {n:"The other half. It fits.",if:["!ticket_found","!passenger_annoyed"]},
+      {show:"passenger",mood:"Asleep",if:["!ticket_found","passenger_annoyed"]},
+      {n:"Her hat stays firmly over her eyes.",if:["!ticket_found","passenger_annoyed"]},
+      {sfx:"steps",if:["!ticket_found","passenger_annoyed"]},
+      {n:"Someone is coming down the corridor. The Conductor, back again.",if:["!ticket_found","passenger_annoyed"]},{cont:1},
+      {who:"conductor",t:"From the corridor. “Ashford Halt. Ashford Halt next.”"},
+      {choice:"",opts:[{label:"Continue",next:"END"}]}]
+};
+const CHECKS = {
+  remember:{verb:"REMEMBER",base:0,framing:"You close your eyes and think back."},
+  lock:{verb:"OPEN THE LOCK",base:1,framing:"The dials click under your fingers. Quietly, now."},
+  convince:{verb:"CONVINCE HIM",base:2,framing:"He waits, pen hovering over his notebook."},
+  again:{verb:"TRY AGAIN",base:1,framing:"One more chance. Make it count."},
+  duck:{verb:"DUCK PAST HIM",base:1,framing:"He's busy with his notebook. Now or never."},
+  claim:{verb:"CLAIM THE TICKET",base:1,framing:"You lean in and choose your words carefully."}
+};
+
+/* =========================================================
+   SOUND (placeholder synth; replace with recorded files)
+   ========================================================= */
+const Snd = (() => {
+  let ctx = null, on = true, wheelsTimer = null, master;
+  const init = () => { if (ctx) return; try { ctx = new (window.AudioContext||window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = .55; master.connect(ctx.destination); } catch(e) { ctx = null; } };
+  const noise = (dur) => { const b = ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate); const d = b.getChannelData(0); for (let i=0;i<d.length;i++) d[i]=Math.random()*2-1; const s = ctx.createBufferSource(); s.buffer=b; return s; };
+  const env = (node, t0, a, peak, hold, rel) => { const g = ctx.createGain(); g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(peak,t0+a); g.gain.setValueAtTime(peak,t0+a+hold); g.gain.exponentialRampToValueAtTime(.0001,t0+a+hold+rel); node.connect(g); g.connect(master); return g; };
+  const burst = (t, dur, freq, q, peak, type="bandpass") => { const n = noise(dur+.1); const f = ctx.createBiquadFilter(); f.type=type; f.frequency.value=freq; f.Q.value=q; n.connect(f); env(f,t,.005,peak,dur*.2,dur); n.start(t); n.stop(t+dur+.1); };
+  const tone = (t, freq, dur, peak, type="sine", to=null) => { const o = ctx.createOscillator(); o.type=type; o.frequency.setValueAtTime(freq,t); if (to) o.frequency.exponentialRampToValueAtTime(to,t+dur); env(o,t,.02,peak,dur*.5,dur*.5); o.start(t); o.stop(t+dur+.1); };
+  const horn = (t, peak, dur) => { [233,277].forEach(fq => { const o = ctx.createOscillator(); o.type="sawtooth"; o.frequency.value=fq; const f = ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=900; o.connect(f); env(f,t,.25,peak,dur,.8); o.start(t); o.stop(t+dur+1.2); }); };
+  const fx = {
+    wheels(){ if (wheelsTimer) return; const tick = () => { if (!on||!ctx) return; const t=ctx.currentTime; burst(t,.06,180,1.2,.12); burst(t+.14,.06,160,1.2,.1); }; tick(); wheelsTimer = setInterval(tick, 900); },
+    hornFar(){ horn(ctx.currentTime,.03,1.4); }, hornNear(){ horn(ctx.currentTime,.09,1.2); },
+    click(){ burst(ctx.currentTime,.03,3000,4,.15); }, clack(){ const t=ctx.currentTime; burst(t,.08,900,2,.6); burst(t+.06,.12,500,1,.4); },
+    door(){ const n = noise(1); const f = ctx.createBiquadFilter(); f.type="bandpass"; f.Q.value=2; const t=ctx.currentTime; f.frequency.setValueAtTime(400,t); f.frequency.linearRampToValueAtTime(1400,t+.7); n.connect(f); env(f,t,.05,.18,.5,.3); n.start(t); n.stop(t+1); },
+    steps(){ const t=ctx.currentTime; for (let i=0;i<4;i++) burst(t+i*.38,.07,140,1,.35,"lowpass"); },
+    cups(){ const t=ctx.currentTime; [2400,3100,2700].forEach((f,i)=>tone(t+i*.35,f,.25,.04)); },
+    tunnel(){ const n = noise(4.5); const f = ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=350; n.connect(f); const t=ctx.currentTime; env(f,t,1.2,.5,1.8,1.4); n.start(t); n.stop(t+4.5); },
+    scrape(){ const n = noise(.6); const f = ctx.createBiquadFilter(); f.type="bandpass"; f.frequency.value=700; f.Q.value=6; n.connect(f); env(f,ctx.currentTime,.05,.25,.3,.2); n.start(); n.stop(ctx.currentTime+.6); },
+    brakes(){ const n = noise(2.6); const f = ctx.createBiquadFilter(); f.type="highpass"; f.frequency.value=3500; n.connect(f); env(f,ctx.currentTime,.2,.07,1.4,1); n.start(); n.stop(ctx.currentTime+2.6); },
+    right(){ const t=ctx.currentTime; tone(t,660,.18,.08); tone(t+.12,880,.3,.08); },
+    wrong(){ tone(ctx.currentTime,300,.45,.07,"triangle",200); },
+    line(){ tone(ctx.currentTime,1200,.05,.015); }
+  };
+  return {
+    play(name){ init(); if (!ctx||!on||!fx[name]) return; if (ctx.state==="suspended") ctx.resume(); try { fx[name](); } catch(e) {} },
+    stopWheels(){ clearInterval(wheelsTimer); wheelsTimer=null; },
+    toggle(){ on = !on; if (!on) this.stopWheels(); return on; },
+    get on(){ return on; }
+  };
+})();
+
+/* =========================================================
+   ENGINE
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const state = { flags:{}, level:0, results:[], startLevel:0, queue:[], running:false, used:{} };
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sleep = ms => new Promise(r => setTimeout(r, reduce ? Math.min(ms,150) : ms));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function showScreen(id){ document.querySelectorAll(".screen").forEach(s => s.hidden = s.id !== id); }
+function cond(c){ if (!c) return true; const list = Array.isArray(c) ? c : [c]; return list.every(k => k[0]==="!" ? !state.flags[k.slice(1)] : !!state.flags[k]); }
+
+const logEl = $("#log"), actEl = $("#actions");
+function addEntry(cls, who, text){
+  logEl.querySelectorAll(".entry:not(.old)").forEach((e,i,all) => { if (i < all.length-3) e.classList.add("old"); });
+  const d = document.createElement("div"); d.className = "entry " + cls;
+  d.innerHTML = (who ? `<span class="who">${esc(who)}:</span>` : "") + `<div class="txt">${esc(text)}</div>`;
+  logEl.appendChild(d); logEl.scrollTop = logEl.scrollHeight; Snd.play("line");
+}
+function addCheckpoint(html){ const d = document.createElement("div"); d.className="cp entry"; d.innerHTML=`<span>${html}</span>`; logEl.appendChild(d); logEl.scrollTop = logEl.scrollHeight; }
+
+function setBg(key){ const b = BGS[key]; const bg = $("#bg"); bg.className = "bg " + b.cls; $("#tint").className = "tint " + b.tint; $("#bgcap").textContent = b.cap; }
+
+function silhouette(hue){ return `<svg viewBox="0 0 250 360" preserveAspectRatio="xMidYMax slice"><defs><linearGradient id="g${hue.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hue}" stop-opacity=".9"/><stop offset="1" stop-color="#0d004d" stop-opacity=".95"/></linearGradient></defs><circle cx="125" cy="130" r="58" fill="url(#g${hue.slice(1)})"/><path d="M25 360c0-90 45-150 100-150s100 60 100 150z" fill="url(#g${hue.slice(1)})"/></svg>`; }
+function showPortrait(id, mood){
+  const box = $("#portraits"); let el = box.querySelector(`[data-p="${id}"]`);
+  if (!el) { el = document.createElement("div"); el.className="pt"; el.dataset.p=id; el.innerHTML = silhouette(CAST[id].hue) + `<span class="mood"></span><div class="nm"><b>${CAST[id].name}</b><span>Placeholder · illustration to be commissioned</span></div>`; box.appendChild(el); }
+  el.classList.remove("leaving"); el.querySelector(".mood").textContent = mood || "";
+}
+function hidePortrait(id, instant){ const el = $(`#portraits [data-p="${id}"]`); if (!el) return; if (instant) { el.remove(); return; } el.classList.add("leaving"); setTimeout(() => el.remove(), 420); }
+function speaking(id){ document.querySelectorAll("#portraits .pt").forEach(p => p.classList.toggle("dimmed", !!id && p.dataset.p !== id)); }
+
+function waitContinue(label="Continue"){
+  return new Promise(res => {
+    actEl.innerHTML = `<button class="cont" id="contBtn">${esc(label)} <svg viewBox="0 0 20 16"><path d="M1 8h17M12 2l6 6-6 6"/></svg></button>`;
+    const b = $("#contBtn"); b.focus({preventScroll:true});
+    b.onclick = () => { actEl.innerHTML = ""; res(); };
+  });
+}
+
+function renderHotspots(opts, pick){
+  const box = $("#hotspots"); box.innerHTML = "";
+  opts.forEach((o,i) => { if (!o.spot) return; const h = document.createElement("button"); h.className = "hotspot" + (state.used[o.label] ? " used" : ""); h.style.left = o.spot[0]+"%"; h.style.top = o.spot[1]+"%"; h.innerHTML = `<span class="dot"></span><span class="hl">${esc(o.label)}</span>`; h.setAttribute("aria-label", o.label); h.onclick = () => pick(i); box.appendChild(h); });
+}
+
+function choose(step){
+  return new Promise(res => {
+    const render = () => {
+      const opts = step.opts;
+      actEl.innerHTML = (step.choice ? `<div class="q">${esc(step.choice)}</div>` : "") + opts.map((o,i) =>
+        o.label === "Continue" ? `<button class="cont" data-i="${i}">Continue <svg viewBox="0 0 20 16"><path d="M1 8h17M12 2l6 6-6 6"/></svg></button>`
+        : `<button class="opt${state.used[o.label] && o.look ? " used" : ""}" data-i="${i}"><span>${i+1}. -</span><b>${esc(o.label)}</b></button>`).join("");
+      actEl.querySelectorAll("[data-i]").forEach(b => b.onclick = () => pick(+b.dataset.i));
+      renderHotspots(opts, pick);
+      const first = actEl.querySelector("button"); first && first.focus({preventScroll:true});
+    };
+    const pick = (i) => {
+      const o = step.opts[i]; actEl.innerHTML = ""; $("#hotspots").innerHTML = "";
+      if (o.label !== "Continue") { const d = document.createElement("div"); d.className="entry chosen"; d.textContent = "→ " + o.label; logEl.appendChild(d); }
+      if (o.sfx) Snd.play(o.sfx);
+      if (o.look) { state.used[o.label] = true; addEntry("narr", null, o.look); render(); return; }
+      res(o);
+    };
+    keyHandler = true;
+    render();
+  });
+}
+let keyHandler = null;
+document.addEventListener("keydown", e => { if (!$("#game").hidden && $("#mcqWrap").hidden && keyHandler && document.activeElement?.tagName !== "INPUT") { const n = parseInt(e.key,10); if (n>=1 && n<=9 && actEl.querySelector(`[data-i="${n-1}"]`)) { e.preventDefault(); actEl.querySelector(`[data-i="${n-1}"]`).click(); } } });
+
+async function run(node){
+  const steps = S[node];
+  for (const st of steps) {
+    if (!cond(st.if)) continue;
+    if (st.bg) setBg(st.bg);
+    else if (st.blink) { const b = $("#blink"); b.classList.remove("run"); void b.offsetWidth; b.classList.add("run"); await sleep(1800); }
+    else if (st.sfx) Snd.play(st.sfx);
+    else if (st.wait) await sleep(st.wait);
+    else if (st.show) { showPortrait(st.show, st.mood); speaking(null); await sleep(350); }
+    else if (st.hide) hidePortrait(st.hide, st.instant);
+    else if (st.mood) { const el = $(`#portraits [data-p="${st.mood}"] .mood`); if (el) el.textContent = st.v; }
+    else if (st.flag) state.flags[st.flag] = true;
+    else if (st.n) { speaking(null); addEntry("narr", null, st.n); await sleep(450); }
+    else if (st.who) { speaking(st.who); addEntry("char", CAST[st.who].name, st.t); await sleep(450); }
+    else if (st.you) { speaking(null); addEntry("you", "You", st.you); await sleep(450); }
+    else if (st.dark !== undefined) {
+      const bo = $("#blackout");
+      if (st.dark === "text") { $("#blackText").textContent = st.t; }
+      else if (st.dark) { $("#blackText").textContent = ""; bo.classList.add("on"); Snd.stopWheels(); await sleep(900); }
+      else { bo.classList.remove("on"); await sleep(400); $("#blackText").textContent = ""; Snd.play("wheels"); }
+    }
+    else if (st.cont) await waitContinue();
+    else if (st.go) return run(st.go);
+    else if (st.choice !== undefined) {
+      const o = await choose(st);
+      if (o.check) { const ok = await runCheck(o.check); return run(o.check + (ok ? "_r" : "_w")); }
+      if (o.next === "END") return showEnd();
+      return run(o.next);
+    }
+  }
+}
+
+/* ---------- Check / MCQ ---------- */
+function runCheck(key){
+  return new Promise(res => {
+    const ck = CHECKS[key];
+    const variant = state.level >= 1 ? 1 : 0;
+    const item = BANK[key][variant];
+    const lvl = Math.min(ck.base + variant, 3);
+    const adapted = variant !== 0;
+    const panel = $("#panel"); panel.classList.add("dim");
+    const wrap = $("#mcqWrap"); wrap.hidden = false;
+    let sel = null, conf = null, done = false;
+    const letters = ["A","B","C","D"];
+    wrap.innerHTML = `<div class="mcq" role="dialog" aria-modal="true" aria-labelledby="qtext">
+      <div class="mcq-head">
+        <div class="ck"><b>${ck.verb}</b><span class="d${adapted ? " adapt" : ""}" title="Matched to your proficiency">${LEVELS[lvl]}${adapted ? " · stretched for you" : ""}</span></div>
+        <p class="framing">${esc(ck.framing)}</p>
+        <p class="qtext" id="qtext">${esc(item.q)}</p>
+      </div>
+      <div class="answers" id="answers">${item.a.map((a,i) => `<button class="ans" data-i="${i}"><span class="id">${letters[i]}</span><span class="at">${esc(a)}</span><span class="mk" aria-hidden="true"></span></button>`).join("")}</div>
+      <div id="fb"></div>
+      <div class="mcq-foot" id="foot"></div>
+      <div id="explainBox"></div>
+    </div>`;
+    const answers = wrap.querySelectorAll(".ans");
+    const foot = $("#foot");
+    const renderFoot = () => {
+      foot.innerHTML = `<span class="q">How sure are you in your answer?</span>
+        <div class="conf" role="group" aria-label="Confidence">${["Guessing","Think so","Sure"].map(c => `<button data-c="${c}" aria-pressed="${conf===c}" ${sel===null?"disabled":""}>${c}</button>`).join("")}</div>
+        <span class="grow"></span><button class="btn sm" id="submitBtn" ${sel===null||!conf?"disabled":""}>Submit</button>`;
+      foot.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { conf = b.dataset.c; renderFoot(); $("#submitBtn").focus(); });
+      $("#submitBtn").onclick = submit;
+    };
+    answers.forEach(b => b.onclick = () => { if (done) return; sel = +b.dataset.i; answers.forEach(x => x.classList.toggle("sel", x === b)); renderFoot(); });
+    renderFoot();
+    answers[0].focus({preventScroll:true});
+    const onKey = (e) => {
+      if (done) return;
+      const k = e.key.toUpperCase(); const idx = "ABCD1234".indexOf(k) % 4;
+      if ("ABCD1234".includes(k) && k.length===1) { e.preventDefault(); answers[idx].click(); }
+      if (e.key === "Enter" && sel !== null && conf && document.activeElement?.closest(".conf,#submitBtn")) { e.preventDefault(); submit(); }
+    };
+    document.addEventListener("keydown", onKey);
+    function submit(){
+      if (sel === null || !conf || done) return; done = true;
+      document.removeEventListener("keydown", onKey);
+      const ok = sel === item.c;
+      state.results.push({key, ok, conf});
+      state.level = ok ? Math.min(state.level + 1, 2) : Math.max(state.level - 1, 0);
+      Snd.play(ok ? "right" : "wrong");
+      answers.forEach((b,i) => { b.disabled = true; b.classList.remove("sel"); if (i === sel) b.classList.add(ok ? "ok" : "no"); if (!ok && i === item.c) b.classList.add("show"); const mk = b.querySelector(".mk"); if (b.classList.contains("ok")||b.classList.contains("show")) mk.textContent="✓"; if (b.classList.contains("no")) mk.textContent="✕"; });
+      $("#fb").innerHTML = `<p class="fb ${ok ? "ok" : "no"}">${ok ? "Correct. " + (conf==="Sure" ? "And you knew it." : "Trust yourself a little more.") : "Not this time. The correct answer is " + letters[item.c] + "." + (conf==="Sure" ? " You were sure, so this one is worth a second look." : "")} </p>`;
+      const exLabel = ok ? "Explain solution" : "Why was it wrong?";
+      foot.innerHTML = `<button class="pill" id="whyBtn" aria-expanded="false">${exLabel}</button><span class="grow"></span><button class="btn sm" id="contMcq">Continue <svg viewBox="0 0 20 16"><path d="M1 8h17M12 2l6 6-6 6"/></svg></button>`;
+      $("#whyBtn").onclick = () => {
+        const box = $("#explainBox"); const open = !box.innerHTML;
+        $("#whyBtn").setAttribute("aria-expanded", open);
+        box.innerHTML = open ? `<div class="explain"><div><span class="v">Curiosity:</span> ${ok ? "Here's why that works." : "Here's what you missed."}</div><div>${esc(item.ex)}</div><div class="src">Features in: ${esc(item.src)}</div><button class="linkbtn" id="tutorBtn">Ask the tutor</button><div id="tutorOut"></div></div>` : "";
+        if (open) $("#tutorBtn").onclick = () => { $("#tutorOut").innerHTML = `<div class="tutor"><b>AI tutor (sample reply):</b> ${esc(item.tutor)}</div>`; $("#tutorBtn").remove(); };
+      };
+      $("#contMcq").onclick = () => {
+        wrap.hidden = true; wrap.innerHTML = ""; panel.classList.remove("dim");
+        addCheckpoint(`${ck.verb} · <span class="${ok ? "ok" : "no"}">${ok ? "Passed" : "Missed"}</span>`);
+        res(ok);
+      };
+      $("#contMcq").focus({preventScroll:true});
+    }
+  });
+}
+
+/* ---------- Character type + end screen ---------- */
+function characterType(){
+  const r = state.results; const n = r.length || 1;
+  const acc = r.filter(x => x.ok).length / n;
+  const confV = r.reduce((s,x) => s + ({Sure:1,"Think so":.5,Guessing:0}[x.conf]), 0) / n;
+  const sureWrong = r.filter(x => !x.ok && x.conf === "Sure").length;
+  const unsureRight = r.filter(x => x.ok && x.conf === "Guessing").length;
+  if (acc >= .75 && confV >= .75) return ["The Oracle","Knows it, and knows they know it."];
+  if (sureWrong >= 2 || (confV - acc) >= .3) return ["The Bold Improviser","Confidence: legendary. Facts: under review."];
+  if (unsureRight >= 2 || (acc - confV) >= .3) return ["The Secret Genius","Right more often than they admit. Trust your gut."];
+  if (acc < .5 && confV < .5) return ["The Explorer","Still mapping new ground, and honest about it."];
+  return ["The Detective","Knows exactly where their knowledge ends. Dangerous."];
+}
+function showEnd(){
+  Snd.stopWheels(); clearInterval(timer.id);
+  const [name, desc] = characterType();
+  const right = state.results.filter(x => x.ok).length, total = state.results.length;
+  const sure = state.results.filter(x => x.conf === "Sure").length;
+  const hasTicket = state.flags.ticket_found || !state.flags.passenger_annoyed;
+  $("#endCard").innerHTML = `
+    <button class="back" data-go="library"><svg width="16" height="12" viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 8H2M8 2L2 8l6 6"/></svg>Game library</button>
+    <div class="eyebrow">Stop 1 complete</div>
+    <h1>Kingsmoor to Ashford Halt</h1>
+    <div class="ctype"><div class="k">Your learner character</div><h2>${name}</h2><p>${desc}</p></div>
+    <div class="stats">
+      <div class="stat"><b>${right} of ${total}</b><span>checks passed</span></div>
+      <div class="stat"><b>${sure} of ${total}</b><span>answered with “Sure”</span></div>
+      <div class="stat"><b>+${total}</b><span>questions added to General Biology progress</span></div>
+    </div>
+    <p class="teaser">${hasTicket ? "Next stop: Ashford Halt. Someone will be waiting." : "Next stop: Ashford Halt. Ticketless."}</p>
+    <div class="row">
+      <button class="btn" disabled>Next stop (coming soon)</button>
+      <button class="btn ghost" id="againBtn">Play again</button>
+      <button class="btn ghost" data-go="library">Back to Level Up</button>
+    </div>`;
+  showScreen("end"); bindGo();
+  $("#againBtn").onclick = () => showScreen("episodes");
+}
+
+/* ---------- Focus timer ---------- */
+const timer = { total: 15*60, left: 15*60, id: null, paused: false };
+function fmt(s){ const m = Math.floor(s/60), x = s%60; return String(m).padStart(2,"0")+":"+String(x).padStart(2,"0"); }
+function drawTimer(){ $("#tTime").textContent = fmt(timer.left); $("#tArc").setAttribute("stroke-dashoffset", (40.84 * (1 - timer.left/timer.total)).toFixed(2)); }
+function startTimer(){ clearInterval(timer.id); timer.left = timer.total; timer.paused = false; setPaused(false); drawTimer(); timer.id = setInterval(() => { if (!timer.paused && timer.left > 0) { timer.left--; drawTimer(); } }, 1000); }
+function setPaused(p){
+  timer.paused = p; $("#pausedBar").hidden = !p;
+  $("#tIcon").innerHTML = p ? '<path d="M3 1.5l7 4.5-7 4.5z"/>' : '<rect x="2" y="1.5" width="2.6" height="9" rx=".6"/><rect x="7.4" y="1.5" width="2.6" height="9" rx=".6"/>';
+  $("#timerBtn").setAttribute("aria-label", p ? "Resume focus timer" : "Pause focus timer");
+  $("#tArc").setAttribute("stroke", p ? "#938aa1" : "#c1bfff");
+}
+$("#timerBtn").onclick = () => setPaused(!timer.paused);
+$("#soundBtn").onclick = () => { const on = Snd.toggle(); $("#soundLbl").textContent = on ? "Sound on" : "Sound off"; $("#soundBtn").setAttribute("aria-pressed", on); $("#soundBtn").setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on"); if (on && !$("#game").hidden) Snd.play("wheels"); };
+
+/* ---------- Library ---------- */
+const GAMES = [
+  {id:"train",name:"Midnight Train",desc:"A mystery on the night train",type:"adventure",playable:true},
+  {id:"snake",name:"Snake",desc:"Eat the right answers, grow longer",type:"arcade"},
+  {id:"ships",name:"Battleships",desc:"Answer to fire. Sink the fleet",type:"arcade"},
+  {id:"orbit",name:"Orbit",desc:"Build a colony, one answer at a time",type:"strategy"},
+  {id:"s5",name:"Coming soon",desc:"",type:"arcade"},{id:"s6",name:"Coming soon",desc:"",type:"adventure"},{id:"s7",name:"Coming soon",desc:"",type:"strategy"},{id:"s8",name:"Coming soon",desc:"",type:"arcade"}
+];
+const ART = {
+  snake:`<svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#2b2366"/><g stroke="#4a3f9a" stroke-width=".6">${Array.from({length:8},(_,i)=>`<path d="M${i*15} 0V160M0 ${i*20}H120"/>`).join("")}</g><path d="M30 120 C30 95 70 100 70 80 S40 55 55 40" fill="none" stroke="#5fe0c8" stroke-width="7" stroke-linecap="round"/><circle cx="55" cy="40" r="5" fill="#5fe0c8"/><rect x="85" y="45" width="8" height="8" fill="#5fe0c8" opacity=".7" transform="rotate(45 89 49)"/></svg>`,
+  ships:`<svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#2a2155"/><rect y="70" width="120" height="90" fill="#3b2f78"/><path d="M15 105h60l-8 10H23z" fill="#8c86b8"/><rect x="35" y="95" width="20" height="10" fill="#8c86b8"/><path d="M60 128h45l-6 8H66z" fill="#6f6aa0"/><rect x="75" y="121" width="12" height="7" fill="#6f6aa0"/></svg>`,
+  orbit:`<svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#1f1a4d"/><circle cx="70" cy="60" r="28" fill="#3b7f7a" opacity=".85"/><ellipse cx="70" cy="60" rx="45" ry="12" fill="none" stroke="#9ed8ec" stroke-width="1.5" opacity=".7"/><circle cx="30" cy="115" r="10" fill="#8a6fd6"/><circle cx="100" cy="125" r="3" fill="#fff"/><circle cx="20" cy="30" r="1.5" fill="#fff"/></svg>`
+};
+function renderLibrary(filter="all"){
+  $("#grid").innerHTML = GAMES.filter(g => filter==="all" || g.type===filter).map(g => {
+    const art = g.playable ? `<img src="train.jpg" alt="">` : (ART[g.id] || "");
+    const label = g.type[0].toUpperCase() + g.type.slice(1);
+    return `<${g.playable ? "button" : "div"} class="card ${g.playable ? "playable" : "soon"}" ${g.playable ? 'id="playTrain" aria-label="Play Midnight Train"' : 'aria-disabled="true"'}>
+      <div class="art ${g.playable ? "" : "ph"}">${art}<span class="badge ${g.playable ? "new" : "soon"}">${g.playable ? "New" : "Coming soon…"}</span></div>
+      <span class="tag ${g.type}">${label}</span><h3>${esc(g.name)}</h3>${g.desc ? `<p>${esc(g.desc)}</p>` : ""}</${g.playable ? "button" : "div"}>`;
+  }).join("");
+  const p = $("#playTrain"); if (p) p.onclick = () => showScreen("episodes");
+}
+document.querySelectorAll("#filters button").forEach(b => b.onclick = () => { document.querySelectorAll("#filters button").forEach(x => x.setAttribute("aria-pressed", x===b)); renderLibrary(b.dataset.f); });
+document.querySelectorAll("#learnerSeg button").forEach(b => b.onclick = () => { document.querySelectorAll("#learnerSeg button").forEach(x => x.setAttribute("aria-pressed", x===b)); state.startLevel = +b.dataset.l; });
+function bindGo(){ document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { Snd.stopWheels(); showScreen(b.dataset.go); }); }
+
+$("#startBtn").onclick = () => {
+  Object.assign(state, { flags:{}, results:[], used:{}, level: state.startLevel });
+  logEl.innerHTML = ""; actEl.innerHTML = ""; $("#portraits").innerHTML = ""; $("#hotspots").innerHTML = ""; $("#blackout").classList.remove("on");
+  showScreen("game"); startTimer(); run("s1");
+};
+renderLibrary(); bindGo();
+</script>

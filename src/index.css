@@ -1,0 +1,5 @@
+/* Map Tailwind theme to Nebula font tokens */
+@theme {
+  --font-sans: var(--font--nebula-body-family);
+  --font-mono: var(--font--nebula-code-family);
+}

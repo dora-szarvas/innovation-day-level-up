@@ -1,0 +1,173 @@
+{
+  "_note": "Sample General Biology items written for the demo. Two variants per check: [0] standard, [1] stretch. c = index of the correct answer. Replace with real question-bank items later.",
+  "items": {
+    "remember": [
+      {
+        "q": "Which organelle is the main site of aerobic respiration in a cell?",
+        "a": [
+          "Nucleus",
+          "Mitochondrion",
+          "Ribosome",
+          "Golgi apparatus"
+        ],
+        "c": 1,
+        "ex": "Mitochondria carry out aerobic respiration and release most of the cell's ATP. The nucleus stores DNA, ribosomes build proteins, and the Golgi apparatus modifies and packages proteins.",
+        "tutor": "Think of mitochondria as the cell's power station: fuel (glucose) and oxygen go in, usable energy (ATP) comes out.",
+        "src": "Lesson 1.2 Cell structure"
+      },
+      {
+        "q": "Which structure is found in plant cells but not in animal cells?",
+        "a": [
+          "Cell membrane",
+          "Ribosome",
+          "Mitochondrion",
+          "Cell wall"
+        ],
+        "c": 3,
+        "ex": "Plant cells have a cellulose cell wall outside the cell membrane, which keeps the cell rigid. Animal cells have a membrane, ribosomes and mitochondria, but no cell wall.",
+        "tutor": "Picture a balloon (the membrane) inside a cardboard box (the wall). Animal cells are just the balloon.",
+        "src": "Lesson 1.2 Cell structure"
+      }
+    ],
+    "lock": [
+      {
+        "q": "What is osmosis?",
+        "a": [
+          "Movement of water across a partially permeable membrane, from a dilute to a more concentrated solution",
+          "Movement of solutes against a concentration gradient using energy",
+          "The cell membrane engulfing large particles",
+          "Movement of ions through protein pumps"
+        ],
+        "c": 0,
+        "ex": "Osmosis is the passive movement of water across a partially permeable membrane, from where there's more free water (dilute solution) to where there's less (concentrated solution). Using energy to move solutes is active transport.",
+        "tutor": "Water moves to dilute the side with more 'stuff' dissolved in it, a bit like evening out a crowd.",
+        "src": "Lesson 2.3 Membrane transport"
+      },
+      {
+        "q": "A red blood cell is placed in a hypotonic solution. What is most likely to happen?",
+        "a": [
+          "It shrinks",
+          "Nothing changes",
+          "It swells and may burst",
+          "It divides"
+        ],
+        "c": 2,
+        "ex": "A hypotonic solution has a lower solute concentration than the cell, so water enters the cell by osmosis. Animal cells have no cell wall to resist the pressure, so the cell swells and can burst (lysis).",
+        "tutor": "Hypo means 'less' solute outside, so water rushes in. Without a wall, there's nothing to stop the cell over-filling.",
+        "src": "Lesson 2.3 Membrane transport"
+      }
+    ],
+    "convince": [
+      {
+        "q": "Two pea plants with genotype Tt are crossed. T (tall) is dominant. What proportion of offspring are expected to be tall?",
+        "a": [
+          "25%",
+          "50%",
+          "75%",
+          "100%"
+        ],
+        "c": 2,
+        "ex": "A Tt × Tt cross gives TT, Tt, Tt and tt. Three of the four combinations contain at least one dominant T allele, so 75% are expected to be tall.",
+        "tutor": "Draw a 2 × 2 Punnett square: only the tt box is short, so 3 out of 4 are tall.",
+        "src": "Lesson 4.1 Mendelian genetics"
+      },
+      {
+        "q": "Two AaBb individuals are crossed and the genes assort independently. What fraction of offspring show both recessive traits (aabb)?",
+        "a": [
+          "1/16",
+          "3/16",
+          "9/16",
+          "1/4"
+        ],
+        "c": 0,
+        "ex": "Each gene gives a 1/4 chance of the recessive genotype (aa or bb). Because they assort independently, multiply: 1/4 × 1/4 = 1/16.",
+        "tutor": "Solve one gene at a time, then multiply the chances. That's quicker than drawing a 16-box square.",
+        "src": "Lesson 4.2 Dihybrid crosses"
+      }
+    ],
+    "again": [
+      {
+        "q": "In DNA, which base pairs with adenine?",
+        "a": [
+          "Cytosine",
+          "Guanine",
+          "Thymine",
+          "Uracil"
+        ],
+        "c": 2,
+        "ex": "In DNA, adenine pairs with thymine and guanine pairs with cytosine. Uracil replaces thymine in RNA.",
+        "tutor": "A handy rhyme: 'Apples in the Tree, Car in the Garage'.",
+        "src": "Lesson 3.1 DNA structure"
+      },
+      {
+        "q": "What is the role of mRNA in protein synthesis?",
+        "a": [
+          "It carries amino acids to the ribosome",
+          "It carries a copy of a gene's code from the DNA to the ribosome",
+          "It forms the structure of the ribosome",
+          "It joins DNA fragments together"
+        ],
+        "c": 1,
+        "ex": "Messenger RNA (mRNA) is a copy of a gene's code, made during transcription. It carries the code to the ribosome for translation. tRNA brings amino acids, rRNA forms ribosomes and DNA ligase joins DNA fragments.",
+        "tutor": "mRNA is the photocopy of the recipe: the original (DNA) stays safely in the nucleus.",
+        "src": "Lesson 3.3 Protein synthesis"
+      }
+    ],
+    "duck": [
+      {
+        "q": "What happens to most human enzymes at very high temperatures?",
+        "a": [
+          "They keep working faster",
+          "They denature and stop working",
+          "They turn into substrates",
+          "They make more copies of themselves"
+        ],
+        "c": 1,
+        "ex": "High temperatures break the bonds that hold an enzyme's shape. The active site changes shape (the enzyme denatures), so the substrate no longer fits and the reaction stops.",
+        "tutor": "An enzyme's active site is like a lock. Heat warps the lock, so the key no longer fits.",
+        "src": "Lesson 2.5 Enzymes"
+      },
+      {
+        "q": "How does a competitive inhibitor slow down an enzyme-controlled reaction?",
+        "a": [
+          "It binds to the active site and blocks the substrate",
+          "It permanently destroys the enzyme",
+          "It binds to the substrate instead of the enzyme",
+          "It raises the temperature of the reaction"
+        ],
+        "c": 0,
+        "ex": "A competitive inhibitor has a similar shape to the substrate, so it binds to the active site and competes with the substrate. Adding more substrate can outcompete it.",
+        "tutor": "Imagine someone sitting in your seat on the train. You can't sit there until they get up.",
+        "src": "Lesson 2.5 Enzymes"
+      }
+    ],
+    "claim": [
+      {
+        "q": "Which gas do plants take in for photosynthesis?",
+        "a": [
+          "Oxygen",
+          "Nitrogen",
+          "Carbon dioxide",
+          "Hydrogen"
+        ],
+        "c": 2,
+        "ex": "Plants take in carbon dioxide and water and use light energy to make glucose, releasing oxygen as a by-product.",
+        "tutor": "Plants breathe in what we breathe out: CO₂ in, O₂ out during photosynthesis.",
+        "src": "Lesson 5.1 Photosynthesis"
+      },
+      {
+        "q": "Where in the chloroplast do the light-independent reactions (Calvin cycle) take place?",
+        "a": [
+          "Thylakoid membrane",
+          "Stroma",
+          "Outer membrane",
+          "Inside the thylakoid space"
+        ],
+        "c": 1,
+        "ex": "The light-dependent reactions happen on the thylakoid membranes. The light-independent reactions (Calvin cycle) take place in the stroma, the fluid around the thylakoids.",
+        "tutor": "Light reactions happen on the stacks (thylakoids). The Calvin cycle happens in the 'soup' around them, the stroma.",
+        "src": "Lesson 5.2 Chloroplasts"
+      }
+    ]
+  }
+}

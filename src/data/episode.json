@@ -1,0 +1,89 @@
+{
+  "_note": "Midnight Train series and episode-level copy: episode list, session length, end screen and character types. Character type rules live in src/game/characterType.js (docs/story-format.md). Every run starts as a learner new to the topic (level 0).",
+  "game": "Midnight Train",
+  "desc": "You wake on the night train with no ticket. Find out who has the other half before the next stop.",
+  "episodes": [
+    {
+      "title": "Episode 1: The Missing Ticket",
+      "playable": true
+    },
+    {
+      "title": "Episode 2: Ashford Halt"
+    },
+    {
+      "title": "Episode 3: The Signal Box"
+    },
+    {
+      "title": "Episode 4: Compartment 7"
+    },
+    {
+      "title": "Episode 5: The Last Stop"
+    }
+  ],
+  "start": "Start episode 1",
+  "sessionLength": {
+    "label": "How long would you like to play?",
+    "default": 15,
+    "options": [
+      {
+        "minutes": 10,
+        "label": "10 minutes"
+      },
+      {
+        "minutes": 15,
+        "label": "15 minutes"
+      },
+      {
+        "minutes": 20,
+        "label": "20 minutes"
+      },
+      {
+        "minutes": 25,
+        "label": "25 minutes"
+      },
+      {
+        "minutes": 30,
+        "label": "30 minutes"
+      },
+      {
+        "minutes": null,
+        "label": "No timer"
+      }
+    ]
+  },
+  "end": {
+    "eyebrow": "Stop 1 complete",
+    "title": "Kingsmoor to Ashford Halt",
+    "characterLabel": "Your learner character",
+    "progressLabel": "questions added to General Biology progress",
+    "teaserWithTicket": "Next stop: Ashford Halt. Someone will be waiting.",
+    "teaserNoTicket": "Next stop: Ashford Halt. Ticketless.",
+    "hasTicketIf": [
+      "ticket_found",
+      "!passenger_annoyed"
+    ],
+    "hasTicketMode": "any"
+  },
+  "characterTypes": {
+    "oracle": [
+      "The Oracle",
+      "Knows it, and knows they know it."
+    ],
+    "improviser": [
+      "The Bold Improviser",
+      "Confidence: legendary. Facts: under review."
+    ],
+    "genius": [
+      "The Secret Genius",
+      "Right more often than they admit. Trust your gut."
+    ],
+    "explorer": [
+      "The Explorer",
+      "Still mapping new ground, and honest about it."
+    ],
+    "detective": [
+      "The Detective",
+      "Knows exactly where their knowledge ends. Dangerous."
+    ]
+  }
+}

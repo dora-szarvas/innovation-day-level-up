@@ -1,0 +1,40 @@
+{
+  "levels": [
+    "Easy",
+    "Medium",
+    "Challenging",
+    "Expert"
+  ],
+  "checks": {
+    "remember": {
+      "verb": "REMEMBER",
+      "base": 0,
+      "framing": "You close your eyes and think back."
+    },
+    "lock": {
+      "verb": "OPEN THE LOCK",
+      "base": 1,
+      "framing": "The dials click under your fingers. Quietly, now."
+    },
+    "convince": {
+      "verb": "CONVINCE HIM",
+      "base": 2,
+      "framing": "He waits, pen hovering over his notebook."
+    },
+    "again": {
+      "verb": "TRY AGAIN",
+      "base": 1,
+      "framing": "One more chance. Make it count."
+    },
+    "duck": {
+      "verb": "DUCK PAST HIM",
+      "base": 1,
+      "framing": "He's busy with his notebook. Now or never."
+    },
+    "claim": {
+      "verb": "CLAIM THE TICKET",
+      "base": 1,
+      "framing": "You lean in and choose your words carefully."
+    }
+  }
+}

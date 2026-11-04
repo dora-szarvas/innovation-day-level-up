@@ -1,0 +1,78 @@
+{
+  "_note": "Backgrounds and cast. img = file name in src/assets/scenes/ (backgrounds) or src/assets/cast/ (portraits), without extension. focus = the point of the image (x, y in %) kept in view on small or tall screens; zoom scales in around it. Hotspot 'spot' positions in story.json are % of the background image. portraitX = where character portraits stand, as % of screen width from the left (default 6).",
+  "aspect": 1.79,
+  "backgrounds": {
+    "compartment": {
+      "img": "bg-compartment",
+      "focus": [
+        25,
+        45
+      ],
+      "cap": "BG1 · Your compartment (AI placeholder · illustration to be commissioned)",
+      "portraitX": 34
+    },
+    "suitcase": {
+      "img": "bg-compartment",
+      "focus": [
+        55,
+        20
+      ],
+      "zoom": 1.6,
+      "cap": "BG1 · Your compartment, luggage rack (AI placeholder · illustration to be commissioned)",
+      "portraitX": 34
+    },
+    "corridor": {
+      "img": "bg-corridor",
+      "focus": [
+        45,
+        50
+      ],
+      "cap": "BG2 · Corridor (AI placeholder · illustration to be commissioned)",
+      "portraitX": 27
+    },
+    "dining": {
+      "img": "bg-dining",
+      "focus": [
+        42,
+        62
+      ],
+      "cap": "BG3 · Dining car (AI placeholder · illustration to be commissioned)"
+    },
+    "dawn": {
+      "img": "bg-compartment-dawn",
+      "focus": [
+        25,
+        45
+      ],
+      "cap": "BG1 · Your compartment, dawn (AI placeholder · illustration to be commissioned)",
+      "portraitX": 34
+    }
+  },
+  "cast": {
+    "narrator": {
+      "name": "Narrator"
+    },
+    "passenger": {
+      "name": "Passenger",
+      "moods": {
+        "Asleep": "passenger-asleep",
+        "Annoyed": "passenger-annoyed",
+        "Kind": "passenger-kind"
+      }
+    },
+    "conductor": {
+      "name": "Conductor",
+      "moods": {
+        "Friendly": "conductor-friendly",
+        "Displeased": "conductor-displeased"
+      }
+    },
+    "stranger": {
+      "name": "Stranger",
+      "moods": {
+        "Amused": "stranger-amused",
+        "Neutral": "stranger-neutral"
+      }
+    }
+  }
+}

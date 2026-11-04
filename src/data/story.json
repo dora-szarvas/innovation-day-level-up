@@ -1,0 +1,736 @@
+{
+  "_note": "Episode 1 of Midnight Train. Each node is a list of steps run in order. See docs/story-format.md.",
+  "start": "s1",
+  "nodes": {
+    "s1": [
+      {
+        "bg": "compartment"
+      },
+      {
+        "blink": 1
+      },
+      {
+        "sfx": "wheels"
+      },
+      {
+        "wait": 1300
+      },
+      {
+        "sfx": "hornFar"
+      },
+      {
+        "n": "You wake to the rattle of wheels. Night presses against the window.",
+        "vo": "vo-narrator-01"
+      },
+      {
+        "beat": 1
+      },
+      {
+        "show": "passenger",
+        "mood": "Asleep"
+      },
+      {
+        "n": "Across from you, an older woman sleeps, her hat tipped over her eyes.",
+        "vo": "vo-narrator-02"
+      },
+      {
+        "beat": 1
+      },
+      {
+        "n": "Where did you get on? Your head is full of fog.",
+        "vo": "vo-narrator-03"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Check your coat pocket",
+            "look": "Empty. Your ticket was here. You're sure of it.",
+            "spot": [
+              11,
+              67
+            ],
+            "vo": "vo-narrator-04"
+          },
+          {
+            "label": "Look out of the window",
+            "look": "Fog, and the long horn again. A tunnel, somewhere ahead.",
+            "sfx": "hornFar",
+            "spot": [
+              27,
+              29
+            ],
+            "vo": "vo-narrator-05"
+          },
+          {
+            "label": "Try to remember where you boarded",
+            "check": "remember"
+          }
+        ]
+      }
+    ],
+    "remember_r": [
+      {
+        "flag": "boarded_known"
+      },
+      {
+        "n": "Kingsmoor. Platform two, the clock stuck at ten past. It comes back clearly.",
+        "vo": "vo-narrator-06"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "go": "s2"
+      }
+    ],
+    "remember_w": [
+      {
+        "flag": "boarded_guessed"
+      },
+      {
+        "n": "Kingsmoor? Kingsford? You wouldn't bet on either.",
+        "vo": "vo-narrator-07"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "go": "s2"
+      }
+    ],
+    "s2": [
+      {
+        "bg": "suitcase"
+      },
+      {
+        "n": "Your suitcase sits on the rack, right above the sleeping woman.",
+        "vo": "vo-narrator-08"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Open the suitcase",
+            "check": "lock"
+          }
+        ]
+      }
+    ],
+    "lock_r": [
+      {
+        "sfx": "click"
+      },
+      {
+        "n": "The lock gives with the softest click. She doesn't stir. Impressive.",
+        "vo": "vo-narrator-09"
+      },
+      {
+        "beat": 1
+      },
+      {
+        "go": "s2b"
+      }
+    ],
+    "lock_w": [
+      {
+        "flag": "passenger_annoyed"
+      },
+      {
+        "sfx": "clack"
+      },
+      {
+        "mood": "passenger",
+        "v": "Annoyed"
+      },
+      {
+        "who": "passenger",
+        "t": "She lifts her hat and glares. “Some of us were sleeping.”",
+        "vo": "vo-passenger-01"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "n": "She tips the hat back down. Pointedly.",
+        "vo": "vo-narrator-10"
+      },
+      {
+        "mood": "passenger",
+        "v": "Asleep"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "go": "s2b"
+      }
+    ],
+    "s2b": [
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Look inside",
+            "next": "s2c"
+          }
+        ]
+      }
+    ],
+    "s2c": [
+      {
+        "n": "Half a ticket, torn clean down the middle. You can make out “Kingsmoor” and a seat number. The rest is gone.",
+        "vo": "vo-narrator-11"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Step into the corridor",
+            "next": "s3"
+          }
+        ]
+      }
+    ],
+    "s3": [
+      {
+        "hide": "passenger"
+      },
+      {
+        "bg": "corridor"
+      },
+      {
+        "sfx": "door"
+      },
+      {
+        "wait": 500
+      },
+      {
+        "sfx": "steps"
+      },
+      {
+        "wait": 900
+      },
+      {
+        "show": "conductor",
+        "mood": "Friendly"
+      },
+      {
+        "who": "conductor",
+        "t": "He touches his cap. “Evening. Ticket, please.”",
+        "vo": "vo-conductor-01"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Show him the half ticket",
+            "check": "convince"
+          }
+        ]
+      }
+    ],
+    "convince_r": [
+      {
+        "you": "“It tore when I boarded. The other half is on this train somewhere.”"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "go": "hint"
+      }
+    ],
+    "convince_w": [
+      {
+        "you": "“I had it, I really did. It was right here, and then I fell asleep, and…”"
+      },
+      {
+        "mood": "conductor",
+        "v": "Displeased"
+      },
+      {
+        "who": "conductor",
+        "t": "His pen stops. “Half a ticket is half a passenger. I need a valid ticket.”",
+        "vo": "vo-conductor-02"
+      },
+      {
+        "beat": 1
+      },
+      {
+        "go": "s4"
+      }
+    ],
+    "hint": [
+      {
+        "mood": "conductor",
+        "v": "Friendly"
+      },
+      {
+        "who": "conductor",
+        "t": "He studies the half, then you. “Kingsmoor. Makes sense.”",
+        "if": "boarded_known",
+        "vo": "vo-conductor-03"
+      },
+      {
+        "who": "conductor",
+        "t": "He studies the half, then you. “Kingsmoor, you said? Hm. Fine.”",
+        "if": "boarded_guessed",
+        "vo": "vo-conductor-04"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "who": "conductor",
+        "t": "He lowers his voice. “Funny thing. A woman in the dining car showed me half a ticket earlier.”",
+        "vo": "vo-conductor-05"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "who": "conductor",
+        "t": "Already moving on. “Hold on to your things. The lights go out in the Hollow Tunnel.”",
+        "vo": "vo-conductor-06"
+      },
+      {
+        "hide": "conductor"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Find the woman in the dining car",
+            "next": "s5"
+          }
+        ]
+      }
+    ],
+    "s4": [
+      {
+        "who": "conductor",
+        "t": "He flips open his notebook and starts writing."
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Try to convince him again",
+            "check": "again"
+          },
+          {
+            "label": "Duck past him while he writes",
+            "check": "duck"
+          }
+        ]
+      }
+    ],
+    "again_r": [
+      {
+        "you": "“Please. Kingsmoor, seat 14. The rest of it is on this train, I promise.”"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "go": "hint"
+      }
+    ],
+    "again_w": [
+      {
+        "flag": "on_shift"
+      },
+      {
+        "who": "conductor",
+        "t": "He tears off a slip. “No ticket, no ride. You can work it off. The bar's short-handed tonight.”",
+        "vo": "vo-conductor-07"
+      },
+      {
+        "beat": 1
+      },
+      {
+        "who": "conductor",
+        "t": "Already moving on. “And hold on to your things. The lights go out in the Hollow Tunnel.”",
+        "vo": "vo-conductor-08"
+      },
+      {
+        "hide": "conductor"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Head to your shift in the dining car",
+            "next": "s5"
+          }
+        ]
+      }
+    ],
+    "duck_r": [
+      {
+        "hide": "conductor"
+      },
+      {
+        "n": "You slip past mid-sentence. He doesn't look up.",
+        "vo": "vo-narrator-12"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "who": "conductor",
+        "t": "Behind you, to no one in particular. “Second half-ticket tonight. That woman in the dining car had one too.”",
+        "vo": "vo-conductor-09"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Head for the dining car",
+            "next": "s5"
+          }
+        ]
+      }
+    ],
+    "duck_w": [
+      {
+        "flag": "on_shift"
+      },
+      {
+        "mood": "conductor",
+        "v": "Displeased"
+      },
+      {
+        "who": "conductor",
+        "t": "He catches your sleeve. “Where do you think you're going?”",
+        "vo": "vo-conductor-10"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "who": "conductor",
+        "t": "“No ticket, no ride. You can work it off. The bar's short-handed tonight.”",
+        "vo": "vo-conductor-07"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "who": "conductor",
+        "t": "Already moving on. “And hold on to your things. The lights go out in the Hollow Tunnel.”",
+        "vo": "vo-conductor-08"
+      },
+      {
+        "hide": "conductor"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Head to your shift in the dining car",
+            "next": "s5"
+          }
+        ]
+      }
+    ],
+    "s5": [
+      {
+        "bg": "dining"
+      },
+      {
+        "sfx": "cups"
+      },
+      {
+        "n": "The dining car is nearly empty. A woman sits alone by the window, a map spread across her table. Half a ticket pins down one corner.",
+        "if": "!on_shift",
+        "vo": "vo-narrator-13"
+      },
+      {
+        "n": "You tie on an apron that isn't yours. A woman sits alone by the window, a map spread across her table. Half a ticket pins down one corner.",
+        "if": "on_shift",
+        "vo": "vo-narrator-14"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "show": "stranger",
+        "mood": "Amused"
+      },
+      {
+        "who": "stranger",
+        "t": "She doesn't look up. “There you are. I was beginning to think you'd miss the train entirely.”",
+        "if": "!on_shift",
+        "vo": "vo-stranger-01"
+      },
+      {
+        "who": "stranger",
+        "t": "She doesn't look up. “A new face behind the bar. Tea, no sugar. And mind the map.”",
+        "if": "on_shift",
+        "vo": "vo-stranger-02"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "who": "stranger",
+        "t": "She taps the torn ticket. “Funny things, tickets. Half of one gets you nowhere.”",
+        "vo": "vo-stranger-03"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Look at the map",
+            "look": "Stations circled in red ink. Ashford Halt, circled twice.",
+            "spot": [
+              45,
+              79
+            ],
+            "vo": "vo-narrator-15"
+          },
+          {
+            "label": "Claim the ticket half",
+            "check": "claim",
+            "sfx": "hornNear"
+          }
+        ]
+      }
+    ],
+    "claim_r": [
+      {
+        "flag": "ticket_found"
+      },
+      {
+        "who": "stranger",
+        "t": "A slow smile. “Hm. You'll do.” She slides the half across the table.",
+        "vo": "vo-stranger-04"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "dark": 1
+      },
+      {
+        "sfx": "tunnel"
+      },
+      {
+        "wait": 1400
+      },
+      {
+        "who": "stranger",
+        "t": "A whisper, close by. “Next stop. Don't be late.”",
+        "vo": "vo-stranger-05"
+      },
+      {
+        "wait": 2600
+      },
+      {
+        "hide": "stranger",
+        "instant": 1
+      },
+      {
+        "dark": 0
+      },
+      {
+        "wait": 900
+      },
+      {
+        "n": "Her seat is empty. The map is gone. In your hand: both halves of your ticket.",
+        "vo": "vo-narrator-16"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Return to your compartment",
+            "next": "s6"
+          }
+        ]
+      }
+    ],
+    "claim_w": [
+      {
+        "who": "stranger",
+        "t": "“Not quite what I hoped.” She begins folding the map.",
+        "vo": "vo-stranger-06"
+      },
+      {
+        "cont": 1
+      },
+      {
+        "dark": 1
+      },
+      {
+        "sfx": "tunnel"
+      },
+      {
+        "wait": 900
+      },
+      {
+        "sfx": "scrape"
+      },
+      {
+        "wait": 700
+      },
+      {
+        "sfx": "steps"
+      },
+      {
+        "wait": 1600
+      },
+      {
+        "hide": "stranger",
+        "instant": 1
+      },
+      {
+        "dark": 0
+      },
+      {
+        "wait": 900
+      },
+      {
+        "n": "Her seat is empty. The ticket is gone. On the table, a napkin: “Next stop.”",
+        "vo": "vo-narrator-17"
+      },
+      {
+        "choice": "What would you like to do?",
+        "opts": [
+          {
+            "label": "Return to your compartment",
+            "next": "s6"
+          }
+        ]
+      }
+    ],
+    "s6": [
+      {
+        "bg": "dawn"
+      },
+      {
+        "sfx": "brakes"
+      },
+      {
+        "n": "Grey light creeps over the hills. The train is slowing.",
+        "vo": "vo-narrator-18"
+      },
+      {
+        "beat": 1
+      },
+      {
+        "show": "passenger",
+        "mood": "Kind",
+        "if": "ticket_found"
+      },
+      {
+        "who": "passenger",
+        "t": "She opens one eye. “Found what you were looking for?”",
+        "if": "ticket_found",
+        "vo": "vo-passenger-02"
+      },
+      {
+        "n": "The Conductor passes your door and gives you a nod.",
+        "if": "ticket_found",
+        "vo": "vo-narrator-19"
+      },
+      {
+        "show": "passenger",
+        "mood": "Kind",
+        "if": [
+          "!ticket_found",
+          "!passenger_annoyed"
+        ]
+      },
+      {
+        "who": "passenger",
+        "t": "She holds out a torn scrap. “A woman dropped this outside your door. In a hurry.”",
+        "if": [
+          "!ticket_found",
+          "!passenger_annoyed"
+        ],
+        "vo": "vo-passenger-03"
+      },
+      {
+        "n": "The other half. It fits.",
+        "if": [
+          "!ticket_found",
+          "!passenger_annoyed"
+        ],
+        "vo": "vo-narrator-20"
+      },
+      {
+        "show": "passenger",
+        "mood": "Asleep",
+        "if": [
+          "!ticket_found",
+          "passenger_annoyed"
+        ]
+      },
+      {
+        "n": "Her hat stays firmly over her eyes.",
+        "if": [
+          "!ticket_found",
+          "passenger_annoyed"
+        ],
+        "vo": "vo-narrator-21"
+      },
+      {
+        "sfx": "steps",
+        "if": [
+          "!ticket_found",
+          "passenger_annoyed"
+        ]
+      },
+      {
+        "n": "Someone is coming down the corridor. The Conductor, back again.",
+        "if": [
+          "!ticket_found",
+          "passenger_annoyed"
+        ],
+        "vo": "vo-narrator-22"
+      },
+      {
+        "cont": 1,
+        "if": "ticket_found"
+      },
+      {
+        "cont": 1,
+        "if": [
+          "!ticket_found",
+          "passenger_annoyed"
+        ]
+      },
+      {
+        "beat": 1,
+        "if": [
+          "!ticket_found",
+          "!passenger_annoyed"
+        ]
+      },
+      {
+        "wait": 1600,
+        "if": [
+          "!ticket_found",
+          "!passenger_annoyed"
+        ]
+      },
+      {
+        "who": "conductor",
+        "t": "From the corridor. “Ashford Halt. Ashford Halt next.”",
+        "vo": "vo-conductor-11"
+      },
+      {
+        "choice": "",
+        "opts": [
+          {
+            "label": "Continue",
+            "next": "END"
+          }
+        ]
+      }
+    ]
+  }
+}
