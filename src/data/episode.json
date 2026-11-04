@@ -52,22 +52,25 @@
     ]
   },
   "end": {
-    "eyebrow": "Stop 1 complete",
-    "title": "Kingsmoor to Ashford Halt",
+    "eyebrow": "Kingsmoor to Ashford Halt",
+    "title": "First stop complete!",
     "characterLabel": "Your learner character",
-    "progressLabel": "questions added to General Biology progress",
     "teaserWithTicket": "Next stop: Ashford Halt. Someone will be waiting.",
     "teaserNoTicket": "Next stop: Ashford Halt. Ticketless.",
     "hasTicketIf": [
       "ticket_found",
       "!passenger_annoyed"
     ],
-    "hasTicketMode": "any"
+    "hasTicketMode": "any",
+    "proficiency": {
+      "value": "+2%",
+      "label": "proficiency"
+    }
   },
   "characterTypes": {
     "oracle": [
       "The Oracle",
-      "Knows it, and knows they know it."
+      "Knows it, and knows they know it. Mildly insufferable."
     ],
     "improviser": [
       "The Bold Improviser",
@@ -75,11 +78,11 @@
     ],
     "genius": [
       "The Secret Genius",
-      "Right more often than they admit. Trust your gut."
+      "Right far more often than they admit. Trust your gut."
     ],
     "explorer": [
       "The Explorer",
-      "Still mapping new ground, and honest about it."
+      "Still mapping new territory, and honest about it."
     ],
     "detective": [
       "The Detective",

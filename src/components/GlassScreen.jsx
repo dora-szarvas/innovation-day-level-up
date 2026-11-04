@@ -31,11 +31,14 @@ export function GlassScreen({ label, onBack, children }) {
           ref={cardRef}
           className="scroll-quiet glass-card relative !rounded-x6 !bg-core-always-brand-1/75 backdrop-blur-xl flex flex-col items-center gap-x8 overflow-auto px-x6 py-x14 text-center"
         >
-          <div className="absolute left-x5 top-x5">
-            <Button type="tertiary" size="small" leadingIcon={<Icon svg={arrowLeftOutlinedRegular} />} onClick={onBack}>
-              Game library
-            </Button>
-          </div>
+          {/* The end screen has its own Back to Game Library button, so it passes no onBack. */}
+          {onBack && (
+            <div className="absolute left-x5 top-x5">
+              <Button type="tertiary" size="small" leadingIcon={<Icon svg={arrowLeftOutlinedRegular} />} onClick={onBack}>
+                Game library
+              </Button>
+            </div>
+          )}
           {children}
         </Card>
       </div>
